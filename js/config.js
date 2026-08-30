@@ -8,7 +8,7 @@
 window.LV8_CONFIG = Object.freeze({
   surveyId: "lv8-launch-style-test-v1",
   supabaseUrl: "https://dihojkxihgymurcnkyvr.supabase.co",
-  supabasePublishableKey: "",
+  supabasePublishableKey: "sb_publishable_B0ZrVA4DYEfiZJoZt4mt-w_VU95omRD",
   // Legacy fallback only. Prefer supabasePublishableKey for new projects.
   supabaseAnonKey: "",
   adminEmails: []

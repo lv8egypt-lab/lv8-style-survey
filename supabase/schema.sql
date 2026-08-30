@@ -106,6 +106,11 @@ create policy "public reads published styles"
 on public.styles for select to anon, authenticated
 using (status = 'published');
 
+drop policy if exists "admins read all styles" on public.styles;
+create policy "admins read all styles"
+on public.styles for select to authenticated
+using ((select private.is_survey_admin()));
+
 drop policy if exists "admins insert styles" on public.styles;
 create policy "admins insert styles"
 on public.styles for insert to authenticated
@@ -126,6 +131,11 @@ drop policy if exists "public reads published comparisons" on public.comparisons
 create policy "public reads published comparisons"
 on public.comparisons for select to anon, authenticated
 using (status = 'published');
+
+drop policy if exists "admins read all comparisons" on public.comparisons;
+create policy "admins read all comparisons"
+on public.comparisons for select to authenticated
+using ((select private.is_survey_admin()));
 
 drop policy if exists "admins insert comparisons" on public.comparisons;
 create policy "admins insert comparisons"
