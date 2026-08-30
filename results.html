@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111111">
+    <meta name="robots" content="noindex,nofollow">
+    <title>LV8 Survey Results</title>
+    <link rel="icon" href="assets/brand/icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/config.js" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/results.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/brand/logo.png" alt="LV8"></span>
+        <span class="brand-copy"><strong>RESULTS</strong><small>STYLE RESEARCH DASHBOARD</small></span>
+      </a>
+      <a class="button button-secondary" href="admin.html">Manage styles</a>
+    </header>
+
+    <main class="page-shell utility-page">
+      <header class="utility-header">
+        <div>
+          <p class="eyebrow">LV8 STYLE PICK</p>
+          <h1>Survey<br><span>results.</span></h1>
+        </div>
+        <p>Rank the styles by star rating, purchase intent, expected price, and direct-comparison performance.</p>
+      </header>
+
+      <section class="auth-card" id="resultsAuth">
+        <h2>Admin sign in</h2>
+        <p id="authExplanation">Sign in to view all collected responses.</p>
+        <input id="resultsEmail" type="email" autocomplete="username" placeholder="Admin email">
+        <input id="resultsPassword" type="password" autocomplete="current-password" placeholder="Password">
+        <button class="button button-primary" id="resultsLoginButton" type="button">Sign in</button>
+        <div class="status-box" id="resultsAuthStatus" hidden></div>
+      </section>
+
+      <section id="resultsDashboard" hidden>
+        <div class="dashboard-grid">
+          <article class="metric-card"><span>Total responses</span><strong id="metricResponses">0</strong></article>
+          <article class="metric-card"><span>Average styles per response</span><strong id="metricCoverage">0</strong></article>
+          <article class="metric-card"><span>Leading style</span><strong id="metricWinner">—</strong></article>
+          <article class="metric-card"><span>Most selected price range</span><strong id="metricPrice">—</strong></article>
+        </div>
+
+        <section class="panel">
+          <div class="utility-header">
+            <div><h2>Style ranking</h2><p class="panel-intro">Average star rating is the primary measure, supported by weighted purchase intent.</p></div>
+            <button class="button button-secondary" id="exportButton" type="button">Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Style</th><th>Rating</th><th>Votes</th><th>Purchase intent</th><th>Top price</th><th>Choice strength</th></tr></thead>
+              <tbody id="rankingBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Comparison results</h2>
+          <p class="panel-intro">The percentage shows the current winner within each direct comparison.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Comparison</th><th>Current winner</th><th>Share</th><th>Total votes</th></tr></thead>
+              <tbody id="comparisonBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Latest responses</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Group</th><th>Styles</th><th>Average</th><th>Date</th></tr></thead>
+              <tbody id="responseBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>LV8 — ELEVATE EVERYTHING.</span><span>PRIVATE ADMIN VIEW</span></footer>
+  </body>
+</html>

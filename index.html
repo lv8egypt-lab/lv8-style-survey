@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111111">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="description" content="Help LV8 choose its first styles—rate the designs, select expected prices, and compare product directions.">
+    <meta property="og:title" content="LV8 Style Pick">
+    <meta property="og:description" content="Your opinion will help decide what makes the first LV8 drop.">
+    <meta property="og:image" content="assets/brand/og-cover.png">
+    <title>LV8 Style Pick</title>
+    <link rel="icon" href="assets/brand/icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/config.js" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="LV8 Style Pick">
+        <span class="brand-mark"><img src="assets/brand/logo.png" alt="LV8"></span>
+        <span class="brand-copy">
+          <strong>STYLE PICK</strong>
+          <small>PRIVATE PRODUCT SURVEY</small>
+        </span>
+      </a>
+      <span class="mode-badge" id="modeBadge">Preparing…</span>
+    </header>
+
+    <main id="main-content">
+      <section class="welcome page-shell" id="welcomeView">
+        <div class="welcome-copy">
+          <p class="eyebrow">Help us shape the first drop</p>
+          <h1>What deserves<br><span>to launch from LV8?</span></h1>
+          <p class="lede">Explore the styles, rate each one out of five, choose a realistic price range, then settle the direct comparisons.</p>
+
+          <div class="survey-facts" aria-label="Survey information">
+            <span><strong id="styleCount">13</strong> styles</span>
+            <span>About <strong>5</strong> minutes</span>
+            <span><strong>No</strong> right or wrong answers</span>
+          </div>
+
+          <form class="start-form" id="startForm">
+            <fieldset>
+              <legend>Which products would you like to rate?</legend>
+              <div class="segmented" role="radiogroup" aria-label="Choose a product group">
+                <label><input type="radio" name="audience" value="both" checked><span>All</span></label>
+                <label><input type="radio" name="audience" value="men"><span>Men</span></label>
+                <label><input type="radio" name="audience" value="women"><span>Women</span></label>
+              </div>
+            </fieldset>
+
+            <label class="text-field">
+              <span>Your name or nickname <small>optional</small></span>
+              <input id="nickname" name="nickname" type="text" maxlength="40" autocomplete="nickname" placeholder="Example: Kareem">
+            </label>
+
+            <button class="button button-primary button-large" type="submit">
+              Start rating
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="privacy-note">Your answers will only be used for product decisions. We will not ask for a phone number or email address.</p>
+          </form>
+        </div>
+
+        <div class="welcome-visual" aria-hidden="true">
+          <div class="visual-card visual-card-back">
+            <img src="assets/styles/women9/1.png" alt="">
+          </div>
+          <div class="visual-card visual-card-front">
+            <img src="assets/styles/men2/1.webp" alt="">
+            <span class="floating-rating">★★★★★</span>
+          </div>
+          <span class="motion-label">MOVE / RATE / PICK</span>
+        </div>
+      </section>
+
+      <section class="survey-view page-shell" id="surveyView" hidden>
+        <header class="survey-progress">
+          <div>
+            <p class="eyebrow">Style rating</p>
+            <p class="progress-copy"><strong id="currentNumber">1</strong> / <span id="totalNumber">13</span></p>
+          </div>
+          <div class="progress-track" aria-label="Survey progress">
+            <span id="progressBar"></span>
+          </div>
+          <button class="text-button" id="saveExitButton" type="button">Save and exit</button>
+        </header>
+
+        <article class="style-stage" id="styleStage">
+          <div class="gallery-panel">
+            <button class="expand-button" id="expandImageButton" type="button" aria-label="Enlarge image">↗</button>
+            <div class="image-frame">
+              <img id="mainStyleImage" src="" alt="">
+              <span class="image-counter" id="imageCounter">1 / 1</span>
+            </div>
+            <div class="thumbnail-strip" id="thumbnailStrip" aria-label="Style images"></div>
+          </div>
+
+          <div class="rating-panel">
+            <div class="style-heading">
+              <div>
+                <span class="style-code" id="styleCode">M01</span>
+                <span class="category-pill" id="styleCategory">PERFORMANCE</span>
+              </div>
+              <h2 id="styleName">Style name</h2>
+              <p id="styleDescription"></p>
+              <div class="tag-list" id="styleTags"></div>
+            </div>
+
+            <fieldset class="question-block">
+              <legend>How would you rate the design?</legend>
+              <p>Consider the silhouette and overall direction—not the color alone.</p>
+              <div class="star-rating" id="starRating" role="radiogroup" aria-label="Rating from one to five stars"></div>
+              <output class="rating-output" id="ratingOutput">Choose from 1 to 5</output>
+            </fieldset>
+
+            <fieldset class="question-block">
+              <legend>What is a realistic price for this piece or set?</legend>
+              <p>Choose the range you would genuinely expect to pay.</p>
+              <div class="choice-grid" id="priceChoices"></div>
+            </fieldset>
+
+            <fieldset class="question-block question-compact">
+              <legend>Would you buy it if the final execution is strong?</legend>
+              <div class="choice-grid choice-grid-three" id="intentChoices"></div>
+            </fieldset>
+
+            <label class="text-field notes-field">
+              <span>Quick note <small>optional</small></span>
+              <textarea id="styleNote" maxlength="240" rows="2" placeholder="What would you change—the fit, color, or a specific detail?"></textarea>
+            </label>
+
+            <div class="survey-actions">
+              <button class="button button-secondary" id="previousStyleButton" type="button">Previous</button>
+              <button class="button button-primary" id="nextStyleButton" type="button" disabled>Next <span aria-hidden="true">→</span></button>
+            </div>
+            <p class="validation-message" id="validationMessage" aria-live="polite"></p>
+          </div>
+        </article>
+      </section>
+
+      <section class="compare-view page-shell narrow-shell" id="compareView" hidden>
+        <header class="section-intro">
+          <p class="eyebrow">Direct comparison</p>
+          <h1>If you could choose only one,<br><span>which would it be?</span></h1>
+          <p>Choose one option in every comparison. Focus on the direction and detail you would actually use.</p>
+        </header>
+
+        <div id="comparisonList" class="comparison-list"></div>
+
+        <div class="survey-actions compare-actions">
+          <button class="button button-secondary" id="backToStylesButton" type="button">Back to ratings</button>
+          <button class="button button-primary button-large" id="submitSurveyButton" type="button">Submit my choices <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="validation-message centered" id="comparisonValidation" aria-live="polite"></p>
+      </section>
+
+      <section class="success-view page-shell narrow-shell" id="successView" hidden>
+        <div class="success-card">
+          <div class="success-mark" aria-hidden="true">✓</div>
+          <p class="eyebrow">Your choices are recorded</p>
+          <h1>Your opinion is in.<br><span>Thanks for taking part.</span></h1>
+          <p id="successMessage">Your response will help rank the styles and shape the first drop.</p>
+          <div class="success-summary" id="successSummary"></div>
+          <button class="button button-secondary" id="restartButton" type="button">Start another response</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>LV8 — ELEVATE EVERYTHING.</span>
+      <span>STYLE RESEARCH / EGYPT</span>
+    </footer>
+
+    <dialog class="image-dialog" id="imageDialog">
+      <button type="button" id="closeImageDialog" aria-label="Close image">×</button>
+      <img id="dialogImage" src="" alt="">
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
