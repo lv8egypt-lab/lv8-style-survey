@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111111">
+    <meta name="robots" content="noindex,nofollow">
+    <title>LV8 Style Manager</title>
+    <link rel="icon" href="assets/brand/icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/config.js" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/admin.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/brand/logo.png" alt="LV8"></span>
+        <span class="brand-copy"><strong>STYLE MANAGER</strong><small>UPLOAD / PUBLISH / COMPARE</small></span>
+      </a>
+      <a class="button button-secondary" href="results.html">View results</a>
+    </header>
+
+    <main class="page-shell utility-page">
+      <header class="utility-header">
+        <div><p class="eyebrow">PRIVATE ADMIN</p><h1>Style<br><span>manager.</span></h1></div>
+        <p>Upload a new style, publish it to the survey, then create a direct comparison between any two directions.</p>
+      </header>
+
+      <section class="auth-card" id="adminAuth">
+        <h2>Admin access</h2>
+        <p id="adminAuthExplanation">Sign in with the admin account registered in Supabase.</p>
+        <input id="adminEmail" type="email" autocomplete="username" placeholder="Admin email">
+        <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Password — 8 characters minimum">
+        <div class="survey-actions">
+          <button class="button button-secondary" id="signUpButton" type="button">Create first account</button>
+          <button class="button button-primary" id="adminLoginButton" type="button">Sign in</button>
+        </div>
+        <div class="status-box" id="adminAuthStatus" hidden></div>
+      </section>
+
+      <section id="adminWorkspace" hidden>
+        <div class="admin-grid">
+          <article class="panel">
+            <h2>Upload a new style</h2>
+            <p class="panel-intro">You can upload multiple images for one style. The first image becomes its cover.</p>
+            <form class="admin-form" id="styleUploadForm">
+              <label>Code <small>Example: M05 or W10</small><input name="code" required maxlength="12" placeholder="M05"></label>
+              <label>Display name<input name="nameAr" required maxlength="80" placeholder="Shift Zip Jacket"></label>
+              <label>Internal English name<input name="nameEn" required maxlength="80" placeholder="Shift Zip Jacket"></label>
+              <label>Product group<select name="audience" required><option value="men">Men</option><option value="women">Women</option><option value="both">Unisex</option></select></label>
+              <label>Category<input name="category" required maxlength="80" placeholder="Athleisure / Outerwear"></label>
+              <label>Short description<textarea name="descriptionAr" rows="3" maxlength="240" placeholder="Describe the silhouette, use case, and defining detail"></textarea></label>
+              <label>Tags <small>Separate with commas</small><input name="tags" maxlength="160" placeholder="Full zip, lightweight, travel"></label>
+              <label>Images <small>JPG / PNG / WEBP — multiple images allowed</small><input name="images" type="file" accept="image/jpeg,image/png,image/webp" multiple required></label>
+              <button class="button button-primary" type="submit">Upload and publish style</button>
+              <div class="status-box" id="styleUploadStatus" hidden></div>
+            </form>
+          </article>
+
+          <article class="panel">
+            <h2>Create a comparison</h2>
+            <p class="panel-intro">Choose Style A and Style B, then write the product question you want to settle.</p>
+            <form class="admin-form" id="comparisonForm">
+              <label>Question<input name="questionAr" required maxlength="160" placeholder="Full zip or pullover?"></label>
+              <label>Short note<input name="noteAr" maxlength="160" placeholder="Choose based on everyday ease of use"></label>
+              <label>Audience<select name="audience"><option value="both">All</option><option value="men">Men</option><option value="women">Women</option></select></label>
+              <label>Style A<select name="styleA" id="styleASelect" required></select></label>
+              <label>Option A label<input name="labelA" required maxlength="80" placeholder="Full zip"></label>
+              <label>Style B<select name="styleB" id="styleBSelect" required></select></label>
+              <label>Option B label<input name="labelB" required maxlength="80" placeholder="Pullover"></label>
+              <button class="button button-primary" type="submit">Publish comparison</button>
+              <div class="status-box" id="comparisonStatus" hidden></div>
+            </form>
+          </article>
+        </div>
+
+        <article class="panel">
+          <h2>Styles published from the admin panel</h2>
+          <div class="table-wrap">
+            <table><thead><tr><th>Code</th><th>Name</th><th>Group</th><th>Images</th></tr></thead><tbody id="adminStylesBody"></tbody></table>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>LV8 — ELEVATE EVERYTHING.</span><span>PRIVATE ADMIN VIEW</span></footer>
+  </body>
+</html>
