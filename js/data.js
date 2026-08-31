@@ -67,11 +67,11 @@ window.LV8_SURVEY_DATA = Object.freeze({
       images: Array.from({ length: 4 }, (_, index) => `assets/styles/men6/${index + 1}.webp`)
     },
     {
-      id: "women-city-track-set", code: "W01", audience: "women", category: "Modest City Movement",
-      nameAr: "City Track Set", nameEn: "City Track Set",
-      descriptionAr: "A relaxed jacket and wide-trouser set with long lines, sport striping, and modest everyday coverage.",
-      tags: ["Modest", "Matching set", "City"],
-      images: ["assets/styles/women1/1.jpeg", "assets/styles/women1/2.jpeg", "assets/styles/women1/3.jpeg", "assets/styles/women1/4.png"]
+      id: "women-sand-stripe-track-set", code: "W01", audience: "women", category: "Athleisure / Sport Heritage",
+      nameAr: "Sand Stripe Track Set", nameEn: "Sand Stripe Track Set",
+      descriptionAr: "A sand half-zip mock-neck top and extra-wide trousers with clean white sport striping for relaxed everyday athleisure.",
+      tags: ["Half zip", "Wide leg", "Side stripe"],
+      images: ["assets/styles/women1/current-1.png"]
     },
     {
       id: "women-wide-motion-set", code: "W02", audience: "women", category: "Athleisure / City",
@@ -166,6 +166,23 @@ window.LV8_SURVEY_DATA = Object.freeze({
       descriptionAr: "A lilac-and-light-grey track jacket and wide pant with curved contrast panels and a soft sport finish.",
       tags: ["Color block", "Wide leg", "Matching set"],
       images: Array.from({ length: 5 }, (_, index) => `assets/styles/women13/${index + 1}.webp`)
+    },
+    {
+      id: "women-air-street-set", code: "W15", audience: "women", category: "Street Sport / Color Block",
+      nameAr: "Air Street Set", nameEn: "Air Street Set",
+      descriptionAr: "An oversized cream-and-navy pullover hoodie and wide-leg track pant built around curved color-block panels and relaxed unisex street-sport volume.",
+      tags: ["Pullover", "Color block", "Wide leg"],
+      images: ["assets/styles/women6/1.jpg"]
+    }
+  ],
+  archivedStyles: [
+    {
+      id: "women-city-track-set", code: "W01 (legacy)", audience: "women", category: "Modest City Movement",
+      nameAr: "City Track Set", nameEn: "City Track Set",
+      descriptionAr: "A relaxed jacket and wide-trouser set with long lines, sport striping, and modest everyday coverage.",
+      tags: ["Modest", "Matching set", "City"],
+      images: ["assets/styles/women1/1.jpeg", "assets/styles/women1/2.jpeg", "assets/styles/women1/3.jpeg", "assets/styles/women1/4.png"],
+      archived: true
     }
   ],
   comparisons: [

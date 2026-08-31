@@ -5,6 +5,7 @@
   let accessToken = "";
   let responses = [];
   let styles = [...window.LV8_SURVEY_DATA.styles];
+  const archivedStyles = [...(window.LV8_SURVEY_DATA.archivedStyles || [])];
   let comparisons = [...window.LV8_SURVEY_DATA.comparisons];
 
   function cache() {
@@ -67,6 +68,10 @@
     return [...map.values()];
   }
 
+  function resultCatalog() {
+    return [...styles, ...archivedStyles];
+  }
+
   function setAuthStatus(message, success) {
     elements.resultsAuthStatus.hidden = false;
     elements.resultsAuthStatus.className = `status-box${success ? " success" : ""}`;
@@ -74,10 +79,10 @@
   }
 
   function buildStyleStats() {
-    const stats = new Map(styles.map((style) => [style.id, {
+    const stats = new Map(resultCatalog().map((style) => [style.id, {
       id: style.id,
       code: style.code,
-      name: style.nameAr,
+      name: `${style.nameAr}${style.archived ? " (archived)" : ""}`,
       ratingTotal: 0,
       ratingCount: 0,
       intentYes: 0,
@@ -151,8 +156,9 @@
   }
 
   function openResponseDetail(response) {
-    const styleMap = new Map(styles.map((style) => [style.id, style]));
-    const styleOrder = new Map(styles.map((style, index) => [style.id, index]));
+    const catalog = resultCatalog();
+    const styleMap = new Map(catalog.map((style) => [style.id, style]));
+    const styleOrder = new Map(catalog.map((style, index) => [style.id, index]));
     const answerEntries = Object.entries(response.answers || {}).sort((a, b) => (styleOrder.get(a[0]) ?? 999) - (styleOrder.get(b[0]) ?? 999));
     const savedRanking = response.final_ranking || response.finalRanking;
     const ranking = Array.isArray(savedRanking) ? savedRanking.slice(0, 5) : [];
@@ -247,7 +253,7 @@
   }
 
   function renderTopFiveResults() {
-    const styleMap = new Map(styles.map((style) => [style.id, style]));
+    const styleMap = new Map(resultCatalog().map((style) => [style.id, style]));
     const pointsByPlace = [5, 4, 3, 2, 1];
     const stats = new Map();
 

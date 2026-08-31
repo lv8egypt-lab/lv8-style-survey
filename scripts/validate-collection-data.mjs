@@ -16,9 +16,11 @@ const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
 
 assert(data && Array.isArray(data.styles), "Survey data did not expose a styles array.");
+assert(data && Array.isArray(data.archivedStyles), "Survey data did not expose an archived styles array.");
 assert(data && Array.isArray(data.comparisons), "Survey data did not expose a comparisons array.");
 
 if (data?.styles && data?.comparisons) {
+  const catalogStyles = [...data.styles, ...(data.archivedStyles || [])];
   const styleIds = new Set(data.styles.map((style) => style.id));
   const styleCodes = new Set(data.styles.map((style) => style.code));
   const imagePaths = data.styles.flatMap((style) => style.images || []);
@@ -26,18 +28,20 @@ if (data?.styles && data?.comparisons) {
   const menCount = data.styles.filter((style) => style.audience === "men").length;
   const womenCount = data.styles.filter((style) => style.audience === "women").length;
 
-  assert(data.styles.length === 22, `Expected 22 styles, found ${data.styles.length}.`);
+  assert(data.styles.length === 23, `Expected 23 styles, found ${data.styles.length}.`);
   assert(data.comparisons.length === 7, `Expected 7 comparisons, found ${data.comparisons.length}.`);
   assert(menCount === 8, `Expected 8 men's styles, found ${menCount}.`);
-  assert(womenCount === 14, `Expected 14 women's styles, found ${womenCount}.`);
+  assert(womenCount === 15, `Expected 15 women's styles, found ${womenCount}.`);
   assert(styleIds.size === data.styles.length, "Style IDs are not unique.");
   assert(styleCodes.size === data.styles.length, "Style codes are not unique.");
-  assert(imagePaths.length === 132, `Expected 132 image references, found ${imagePaths.length}.`);
-  assert(galleryNames.size === 22, `Expected 22 referenced galleries, found ${galleryNames.size}.`);
-  assert(!styleIds.has("women-air-street-set"), "The removed Women6 collection is still published.");
-  assert(!imagePaths.some((imagePath) => imagePath.includes("/women6/")), "A published image still points to Women6.");
+  assert(new Set(catalogStyles.map((style) => style.id)).size === catalogStyles.length, "Active and archived style IDs are not unique.");
+  assert(imagePaths.length === 130, `Expected 130 image references, found ${imagePaths.length}.`);
+  assert(galleryNames.size === 23, `Expected 23 referenced galleries, found ${galleryNames.size}.`);
+  assert(styleIds.has("women-air-street-set"), "The restored Women6 collection is not published.");
+  assert(imagePaths.some((imagePath) => imagePath.includes("/women6/")), "The Women6 gallery is not referenced.");
+  assert(data.archivedStyles.some((style) => style.id === "women-city-track-set"), "The replaced W01 style is not preserved for historical results.");
 
-  for (const style of data.styles) {
+  for (const style of catalogStyles) {
     assert(style.images?.length > 0, `${style.id} has no images.`);
     for (const imagePath of style.images || []) {
       const absolutePath = path.join(repoRoot, ...imagePath.split("/"));
@@ -58,4 +62,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log("Collection data valid: 22 styles, 7 comparisons, and 132 image references.");
+console.log("Collection data valid: 23 styles, 7 comparisons, and 130 active image references.");
