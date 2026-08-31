@@ -10,8 +10,8 @@ English product-research survey built with HTML, CSS, and vanilla JavaScript for
 
 ## Current status
 
-- 13 seeded LV8 style directions using all 70 reference images supplied for the survey.
-- Five-star design ratings, expected-price voting, purchase intent, optional comments, and direct A/B comparisons.
+- 22 seeded LV8 style directions using 132 current collection images supplied for the survey.
+- Five-star design ratings, expected-price voting, purchase intent, optional comments, and direct product comparisons.
 - English, mobile-first survey experience.
 - Shared response collection connected to Supabase.
 - Row Level Security enabled on every exposed survey table.
@@ -36,7 +36,8 @@ Never put a Supabase secret key or legacy `service_role` key in browser code. Th
 - `index.html` — respondent survey.
 - `admin.html` — private style uploader and comparison builder.
 - `results.html` — private aggregate results and CSV export.
-- `js/data.js` — 13 seeded research styles and comparison data.
+- `js/data.js` — 22 seeded research styles and seven direct-comparison questions.
+- `scripts/sync-collections.ps1` — republishes the current project collection folders into normalized website galleries without deleting existing assets.
 - `supabase/schema.sql` — reproducible tables, indexes, grants, policies, and storage setup.
 
 The survey names are working research names, not approved retail product names. Original reference files outside this repository were not changed.

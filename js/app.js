@@ -1,7 +1,8 @@
 (function () {
   "use strict";
 
-  const draftKey = `lv8-survey-draft:${window.LV8_CONFIG?.surveyId || "default"}`;
+  const collectionVersion = "2026-08-31-v2";
+  const draftKey = `lv8-survey-draft:${window.LV8_CONFIG?.surveyId || "default"}:${collectionVersion}`;
   const ratingLabels = ["Not for me", "Weak", "Average", "Strong", "Must launch"];
   let styles = [...window.LV8_SURVEY_DATA.styles];
   let comparisons = [...window.LV8_SURVEY_DATA.comparisons];
