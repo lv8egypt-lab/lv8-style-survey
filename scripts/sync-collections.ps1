@@ -70,7 +70,18 @@ Copy-Gallery "$sourceRoot\Men6" "men6"
 
 Copy-Gallery "$sourceRoot\Women1" "women1" @("1.jpeg", "2.jpeg", "3.jpeg", "ChatGPT Image Aug 31, 2026, 02_37_32 PM.png")
 Copy-Gallery "$sourceRoot\Women2" "women2" @("Codex Image Aug 31, 2026, 11_37_42 AM.png", "LV8_photo_1_top_left.png", "LV8_photo_2_center.png", "LV8_photo_3_top_right.png", "LV8_photo_4_bottom_left.png", "LV8_photo_5_bottom_right.png")
-Copy-Gallery "$sourceRoot\Women3" "women3" @((1..7 | ForEach-Object { "$_.webp" }))
+$women3Destination = Join-Path $liveRoot "women3"
+New-Item -ItemType Directory -Path $women3Destination -Force | Out-Null
+$women3LogoSource = Join-Path $sourceRoot "Women3\lv8-logo\1.png"
+$women3LogoDestination = Join-Path $women3Destination "1.png"
+Copy-Item -LiteralPath $women3LogoSource -Destination $women3LogoDestination -Force
+$copiedPaths.Add($women3LogoDestination)
+foreach ($index in 2..7) {
+  $women3Source = Join-Path $sourceRoot "Women3\$index.webp"
+  $women3DestinationFile = Join-Path $women3Destination "$index.webp"
+  Copy-Item -LiteralPath $women3Source -Destination $women3DestinationFile -Force
+  $copiedPaths.Add($women3DestinationFile)
+}
 Copy-Gallery "$sourceRoot\Women4" "women4" @("0.png", "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "8.png")
 Copy-Gallery "$sourceRoot\Women5" "women5" @((1..15 | ForEach-Object { "$_.webp" }))
 Copy-Gallery "$sourceRoot\Women7\V1" "women7-v1" @((1..6 | ForEach-Object { "$_.webp" }))

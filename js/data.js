@@ -85,7 +85,10 @@ window.LV8_SURVEY_DATA = Object.freeze({
       nameAr: "Pace Essential Tee", nameEn: "Pace Essential Tee",
       descriptionAr: "A clean, straight-cut performance tee designed for training and everyday use.",
       tags: ["T-shirt", "Performance", "Essential"],
-      images: Array.from({ length: 7 }, (_, index) => `assets/styles/women3/${index + 1}.webp`)
+      images: [
+        "assets/styles/women3/1.png",
+        ...Array.from({ length: 6 }, (_, index) => `assets/styles/women3/${index + 2}.webp`)
+      ]
     },
     {
       id: "women-asymmetric-modest-top", code: "W04", audience: "women", category: "Modest Performance",
