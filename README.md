@@ -11,12 +11,12 @@ English product-research survey built with HTML, CSS, and vanilla JavaScript for
 ## Current status
 
 - 22 seeded LV8 style directions using 132 current collection images supplied for the survey.
-- Five-star design ratings, expected-price voting, purchase intent, optional comments, and direct product comparisons.
+- Five-star design ratings, expected-price voting, purchase intent, optional comments, direct product comparisons, and a personalized final Top Five ranking.
 - English, mobile-first survey experience.
 - Shared response collection connected to Supabase.
 - Row Level Security enabled on every exposed survey table.
 - Public respondents can submit answers but cannot read collected responses.
-- Private results dashboard with rankings, price summaries, comparison results, and CSV export.
+- Private results dashboard with style rankings, price summaries, comparison results, weighted Top Five results, and CSV export.
 - Admin workspace for adding styles, comparisons, and images.
 - GitHub Pages deployment from the `main` branch and repository root.
 

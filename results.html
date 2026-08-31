@@ -7,11 +7,11 @@
     <meta name="robots" content="noindex,nofollow">
     <title>LV8 Survey Results</title>
     <link rel="icon" href="assets/brand/icon.png">
-    <link rel="stylesheet" href="styles.css">
-    <script src="js/config.js" defer></script>
-    <script src="js/data.js" defer></script>
-    <script src="js/storage.js" defer></script>
-    <script src="js/results.js" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260901-top5">
+    <script src="js/config.js?v=20260901-top5" defer></script>
+    <script src="js/data.js?v=20260901-top5" defer></script>
+    <script src="js/storage.js?v=20260901-top5" defer></script>
+    <script src="js/results.js?v=20260901-top5" defer></script>
   </head>
   <body>
     <header class="topbar">
@@ -28,7 +28,7 @@
           <p class="eyebrow">LV8 STYLE PICK</p>
           <h1>Survey<br><span>results.</span></h1>
         </div>
-        <p>Rank the styles by star rating, purchase intent, expected price, and direct-comparison performance.</p>
+        <p>Rank the styles by star rating, purchase intent, expected price, direct comparisons, and each respondent's final top five.</p>
       </header>
 
       <section class="auth-card" id="resultsAuth">
@@ -68,6 +68,17 @@
             <table>
               <thead><tr><th>Comparison</th><th>Current winner</th><th>Share</th><th>Total votes</th></tr></thead>
               <tbody id="comparisonBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Final Top Five</h2>
+          <p class="panel-intro">Five points are awarded for first place, then four, three, two, and one. Podium finishes count positions one to three.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Style</th><th>Points</th><th>Ranked votes</th><th>First place</th><th>Podium finishes</th></tr></thead>
+              <tbody id="topFiveBody"></tbody>
             </table>
           </div>
         </section>

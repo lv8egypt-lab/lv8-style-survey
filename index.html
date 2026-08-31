@@ -11,11 +11,11 @@
     <meta property="og:image" content="assets/brand/og-cover.png">
     <title>LV8 Style Pick</title>
     <link rel="icon" href="assets/brand/icon.png">
-    <link rel="stylesheet" href="styles.css?v=20260831-mobile">
-    <script src="js/config.js" defer></script>
-    <script src="js/data.js" defer></script>
-    <script src="js/storage.js" defer></script>
-    <script src="js/app.js" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260901-top5">
+    <script src="js/config.js?v=20260901-top5" defer></script>
+    <script src="js/data.js?v=20260901-top5" defer></script>
+    <script src="js/storage.js?v=20260901-top5" defer></script>
+    <script src="js/app.js?v=20260901-top5" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -36,11 +36,11 @@
         <div class="welcome-copy">
           <p class="eyebrow">Help us shape the first drop</p>
           <h1>What deserves<br><span>to launch from LV8?</span></h1>
-          <p class="lede">Explore the styles, rate each one out of five, choose a realistic price range, then settle the direct comparisons.</p>
+          <p class="lede">Explore the styles, rate each one out of five, choose a realistic price range, settle the direct comparisons, then rank your final top five.</p>
 
           <div class="survey-facts" aria-label="Survey information">
             <span><strong id="styleCount">22</strong> styles</span>
-            <span>About <strong>8</strong> minutes</span>
+            <span>About <strong>9</strong> minutes</span>
             <span><strong>No</strong> right or wrong answers</span>
           </div>
 
@@ -155,9 +155,29 @@
 
         <div class="survey-actions compare-actions">
           <button class="button button-secondary" id="backToStylesButton" type="button">Back to ratings</button>
-          <button class="button button-primary button-large" id="submitSurveyButton" type="button">Submit my choices <span aria-hidden="true">→</span></button>
+          <button class="button button-primary button-large" id="submitSurveyButton" type="button">Build my Top Five <span aria-hidden="true">→</span></button>
         </div>
         <p class="validation-message centered" id="comparisonValidation" aria-live="polite"></p>
+      </section>
+
+      <section class="ranking-view page-shell narrow-shell" id="rankingView" hidden>
+        <header class="section-intro ranking-intro">
+          <p class="eyebrow">Final decision</p>
+          <h1>Rank your<br><span>Top Five.</span></h1>
+          <p>These are your five strongest-rated styles. Tap them in order from first place to fifth place. Your purchase intent breaks any rating ties.</p>
+        </header>
+
+        <div class="ranking-status" aria-live="polite">
+          <strong id="rankingProgress">Choose your #1</strong>
+          <button class="text-button" id="resetRankingButton" type="button">Reset ranking</button>
+        </div>
+        <div class="ranking-list" id="rankingList"></div>
+
+        <div class="survey-actions ranking-actions">
+          <button class="button button-secondary" id="backToComparisonsButton" type="button">Back to comparisons</button>
+          <button class="button button-primary button-large" id="finalSubmitButton" type="button" disabled>Submit final ranking <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="validation-message centered" id="rankingValidation" aria-live="polite"></p>
       </section>
 
       <section class="success-view page-shell narrow-shell" id="successView" hidden>

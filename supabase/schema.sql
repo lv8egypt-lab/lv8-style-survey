@@ -44,10 +44,20 @@ create table if not exists public.survey_responses (
   profile jsonb not null default '{}'::jsonb check (jsonb_typeof(profile) = 'object'),
   answers jsonb not null check (jsonb_typeof(answers) = 'object'),
   comparisons jsonb not null default '{}'::jsonb check (jsonb_typeof(comparisons) = 'object'),
+  final_ranking jsonb not null default '[]'::jsonb,
   started_at timestamptz,
   submitted_at timestamptz not null default now(),
   user_agent text
 );
+
+-- Safe upgrade for projects created before the final Top Five feature.
+alter table public.survey_responses
+  add column if not exists final_ranking jsonb not null default '[]'::jsonb;
+alter table public.survey_responses
+  drop constraint if exists survey_responses_final_ranking_check;
+alter table public.survey_responses
+  add constraint survey_responses_final_ranking_check
+  check (jsonb_typeof(final_ranking) = 'array' and jsonb_array_length(final_ranking) <= 5);
 
 create index if not exists styles_survey_status_sort_idx
   on public.styles (survey_id, status, sort_order, created_at);
@@ -161,6 +171,17 @@ with check (
   and octet_length(answers::text) < 100000
   and octet_length(profile::text) < 10000
   and octet_length(comparisons::text) < 30000
+  and octet_length(final_ranking::text) < 10000
+  and jsonb_array_length(final_ranking) = 5
+  and (
+    select count(distinct ranked.style_id)
+    from jsonb_array_elements_text(final_ranking) as ranked(style_id)
+  ) = 5
+  and not exists (
+    select 1
+    from jsonb_array_elements_text(final_ranking) as ranked(style_id)
+    where not (answers ? ranked.style_id)
+  )
 );
 
 drop policy if exists "admins read survey responses" on public.survey_responses;

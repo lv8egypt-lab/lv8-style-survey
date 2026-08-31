@@ -1,13 +1,14 @@
 (function () {
   "use strict";
 
-  const collectionVersion = "2026-08-31-v2";
+  const collectionVersion = "2026-09-01-v3";
   const draftKey = `lv8-survey-draft:${window.LV8_CONFIG?.surveyId || "default"}:${collectionVersion}`;
   const ratingLabels = ["Not for me", "Weak", "Average", "Strong", "Must launch"];
   let styles = [...window.LV8_SURVEY_DATA.styles];
   let comparisons = [...window.LV8_SURVEY_DATA.comparisons];
   let filteredStyles = [];
   let filteredComparisons = [];
+  let topFiveCandidates = [];
   let currentStyleIndex = 0;
   let currentImageIndex = 0;
   let state = makeFreshState();
@@ -24,19 +25,21 @@
       profile: { audience: "both", nickname: "" },
       answers: {},
       comparisons: {},
+      finalRanking: [],
       startedAt: new Date().toISOString()
     };
   }
 
   function cacheElements() {
     [
-      "welcomeView", "surveyView", "compareView", "successView", "startForm", "nickname",
+      "welcomeView", "surveyView", "compareView", "rankingView", "successView", "startForm", "nickname",
       "modeBadge", "styleCount", "currentNumber", "totalNumber", "progressBar", "styleStage",
       "mainStyleImage", "thumbnailStrip", "imageCounter", "expandImageButton", "styleCode",
       "styleCategory", "styleName", "styleDescription", "styleTags", "starRating", "ratingOutput",
       "priceChoices", "intentChoices", "styleNote", "previousStyleButton", "nextStyleButton",
       "saveExitButton", "validationMessage", "comparisonList", "backToStylesButton",
-      "submitSurveyButton", "comparisonValidation", "successMessage", "successSummary", "restartButton",
+      "submitSurveyButton", "comparisonValidation", "rankingList", "rankingProgress", "resetRankingButton",
+      "backToComparisonsButton", "finalSubmitButton", "rankingValidation", "successMessage", "successSummary", "restartButton",
       "imageDialog", "dialogImage", "closeImageDialog", "toast"
     ].forEach((id) => { elements[id] = document.getElementById(id); });
   }
@@ -82,7 +85,10 @@
     elements.nextStyleButton.addEventListener("click", nextStyle);
     elements.saveExitButton.addEventListener("click", saveAndExit);
     elements.backToStylesButton.addEventListener("click", () => showView("survey"));
-    elements.submitSurveyButton.addEventListener("click", submitSurvey);
+    elements.submitSurveyButton.addEventListener("click", openTopFive);
+    elements.backToComparisonsButton.addEventListener("click", () => showView("compare"));
+    elements.resetRankingButton.addEventListener("click", resetRanking);
+    elements.finalSubmitButton.addEventListener("click", submitSurvey);
     elements.restartButton.addEventListener("click", restartSurvey);
     elements.expandImageButton.addEventListener("click", openCurrentImage);
     elements.closeImageDialog.addEventListener("click", () => elements.imageDialog.close());
@@ -150,6 +156,8 @@
     if (draft && draft.profile?.audience === audience && Object.keys(draft.answers || {}).length) {
       state = draft;
       state.profile.nickname = nickname || state.profile.nickname || "";
+      state.comparisons = state.comparisons || {};
+      state.finalRanking = Array.isArray(state.finalRanking) ? state.finalRanking : [];
       currentStyleIndex = Math.min(Number(draft.currentStyleIndex) || 0, styles.length - 1);
     } else {
       state = makeFreshState();
@@ -169,6 +177,7 @@
     elements.welcomeView.hidden = name !== "welcome";
     elements.surveyView.hidden = name !== "survey";
     elements.compareView.hidden = name !== "compare";
+    elements.rankingView.hidden = name !== "ranking";
     elements.successView.hidden = name !== "success";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -325,7 +334,7 @@
     });
   }
 
-  async function submitSurvey() {
+  function openTopFive() {
     const unanswered = filteredComparisons.filter((comparison) => !state.comparisons[comparison.id]);
     if (unanswered.length) {
       elements.comparisonValidation.textContent = `${unanswered.length} comparison${unanswered.length === 1 ? " still needs" : "s still need"} a choice.`;
@@ -333,8 +342,89 @@
       return;
     }
 
-    elements.submitSurveyButton.disabled = true;
-    elements.submitSurveyButton.textContent = "Submitting…";
+    topFiveCandidates = buildTopFiveCandidates();
+    const candidateIds = new Set(topFiveCandidates.map((item) => item.style.id));
+    state.finalRanking = [...new Set(state.finalRanking || [])].filter((styleId) => candidateIds.has(styleId));
+    renderTopFive();
+    showView("ranking");
+  }
+
+  function buildTopFiveCandidates() {
+    const intentWeight = { yes: 3, maybe: 2, "": 1, no: 0 };
+    return filteredStyles
+      .map((style, originalIndex) => {
+        const vote = state.answers[style.id] || {};
+        return {
+          style,
+          vote,
+          originalIndex,
+          rating: Number(vote.rating || 0),
+          intentWeight: intentWeight[vote.intent || ""] ?? 1
+        };
+      })
+      .sort((a, b) => b.rating - a.rating || b.intentWeight - a.intentWeight || a.originalIndex - b.originalIndex)
+      .slice(0, 5);
+  }
+
+  function renderTopFive() {
+    elements.rankingList.innerHTML = "";
+    topFiveCandidates.forEach(({ style, vote }) => {
+      const rank = state.finalRanking.indexOf(style.id) + 1;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `ranking-option${rank ? " selected" : ""}`;
+      button.setAttribute("aria-pressed", rank ? "true" : "false");
+      button.setAttribute("aria-label", rank ? `${style.nameAr}, ranked number ${rank}. Select to remove.` : `${style.nameAr}. Select as number ${state.finalRanking.length + 1}.`);
+      button.innerHTML = `
+        <span class="ranking-image">
+          <img src="${escapeAttribute(style.images[0])}" alt="${escapeAttribute(style.nameAr)}">
+          <strong class="ranking-badge">${rank ? `#${rank}` : "+"}</strong>
+        </span>
+        <span class="ranking-copy">
+          <strong>${escapeHtml(style.code)} — ${escapeHtml(style.nameAr)}</strong>
+          <small>${Number(vote.rating || 0)}/5 · ${escapeHtml(intentLabel(vote.intent))}</small>
+        </span>`;
+      button.addEventListener("click", () => toggleRankedStyle(style.id));
+      elements.rankingList.appendChild(button);
+    });
+
+    const rankedCount = state.finalRanking.length;
+    elements.rankingProgress.textContent = rankedCount === 5 ? "Top Five complete" : `Choose your #${rankedCount + 1}`;
+    elements.finalSubmitButton.disabled = rankedCount !== 5;
+    elements.rankingValidation.textContent = "";
+    persistDraft();
+  }
+
+  function toggleRankedStyle(styleId) {
+    const existingIndex = state.finalRanking.indexOf(styleId);
+    if (existingIndex >= 0) {
+      state.finalRanking.splice(existingIndex, 1);
+    } else if (state.finalRanking.length < 5) {
+      state.finalRanking.push(styleId);
+    }
+    renderTopFive();
+  }
+
+  function resetRanking() {
+    state.finalRanking = [];
+    renderTopFive();
+  }
+
+  function intentLabel(intent) {
+    if (intent === "yes") return "Would buy";
+    if (intent === "maybe") return "Maybe buy";
+    if (intent === "no") return "Not for me";
+    return "No purchase answer";
+  }
+
+  async function submitSurvey() {
+    if (state.finalRanking.length !== 5) {
+      elements.rankingValidation.textContent = `Choose ${5 - state.finalRanking.length} more style${state.finalRanking.length === 4 ? "" : "s"} to complete your Top Five.`;
+      return;
+    }
+
+    elements.finalSubmitButton.disabled = true;
+    elements.finalSubmitButton.textContent = "Submitting…";
     state.submittedAt = new Date().toISOString();
     const result = await window.LV8Storage.submitResponse(state);
     localStorage.removeItem(draftKey);
@@ -344,7 +434,7 @@
   function showSuccess(mode) {
     const answers = Object.values(state.answers);
     const average = answers.length ? answers.reduce((total, item) => total + Number(item.rating || 0), 0) / answers.length : 0;
-    elements.successSummary.innerHTML = `<span>${answers.length} styles rated</span><span>Your average ${average.toFixed(1)} / 5</span><span>${Object.keys(state.comparisons).length} comparisons</span>`;
+    elements.successSummary.innerHTML = `<span>${answers.length} styles rated</span><span>Your average ${average.toFixed(1)} / 5</span><span>${Object.keys(state.comparisons).length} comparisons</span><span>Top 5 ranked</span>`;
     if (mode === "cloud") {
       elements.successMessage.textContent = "Your response is in and will help rank the styles and shape the first drop.";
     } else if (mode === "local-fallback") {
@@ -359,8 +449,9 @@
     state = makeFreshState();
     currentStyleIndex = 0;
     localStorage.removeItem(draftKey);
-    elements.submitSurveyButton.disabled = false;
-    elements.submitSurveyButton.innerHTML = "Submit my choices <span aria-hidden=\"true\">→</span>";
+    topFiveCandidates = [];
+    elements.finalSubmitButton.disabled = true;
+    elements.finalSubmitButton.innerHTML = "Submit final ranking <span aria-hidden=\"true\">→</span>";
     elements.startForm.reset();
     showView("welcome");
   }

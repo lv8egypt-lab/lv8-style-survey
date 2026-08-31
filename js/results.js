@@ -11,7 +11,7 @@
     [
       "resultsAuth", "authExplanation", "resultsEmail", "resultsPassword", "resultsLoginButton",
       "resultsAuthStatus", "resultsDashboard", "metricResponses", "metricCoverage", "metricWinner",
-      "metricPrice", "rankingBody", "comparisonBody", "responseBody", "exportButton"
+      "metricPrice", "rankingBody", "comparisonBody", "topFiveBody", "responseBody", "exportButton"
     ].forEach((id) => { elements[id] = document.getElementById(id); });
   }
 
@@ -126,11 +126,45 @@
       </tr>`).join("") || emptyRow(7);
 
     renderComparisons();
+    renderTopFiveResults();
     elements.responseBody.innerHTML = responses.slice(0, 30).map((row) => {
       const answers = Object.values(row.answers || {});
       const average = answers.length ? answers.reduce((sum, answer) => sum + Number(answer.rating || 0), 0) / answers.length : 0;
       return `<tr><td>${escapeHtml(row.profile?.nickname || "Anonymous")}</td><td>${audienceLabel(row.profile?.audience)}</td><td>${answers.length}</td><td>${average.toFixed(1)} / 5</td><td>${formatDate(row.submitted_at || row.submittedAt)}</td></tr>`;
     }).join("") || emptyRow(5);
+  }
+
+  function renderTopFiveResults() {
+    const styleMap = new Map(styles.map((style) => [style.id, style]));
+    const pointsByPlace = [5, 4, 3, 2, 1];
+    const stats = new Map();
+
+    responses.forEach((response) => {
+      const ranking = response.final_ranking || response.finalRanking || [];
+      if (!Array.isArray(ranking)) return;
+      ranking.slice(0, 5).forEach((styleId, index) => {
+        const item = stats.get(styleId) || { styleId, points: 0, votes: 0, firsts: 0, podiums: 0 };
+        item.points += pointsByPlace[index];
+        item.votes += 1;
+        if (index === 0) item.firsts += 1;
+        if (index < 3) item.podiums += 1;
+        stats.set(styleId, item);
+      });
+    });
+
+    const ranked = [...stats.values()].sort((a, b) => b.points - a.points || b.firsts - a.firsts || b.podiums - a.podiums);
+    elements.topFiveBody.innerHTML = ranked.map((item, index) => {
+      const style = styleMap.get(item.styleId);
+      const label = style ? `${style.code} — ${style.nameAr}` : item.styleId;
+      return `<tr>
+        <td><span class="rank-number">${index + 1}</span></td>
+        <td><strong>${escapeHtml(label)}</strong></td>
+        <td>${item.points}</td>
+        <td>${item.votes}</td>
+        <td>${item.firsts}</td>
+        <td>${item.podiums}</td>
+      </tr>`;
+    }).join("") || emptyRow(6, "No final Top Five rankings yet.");
   }
 
   function renderComparisons() {
@@ -151,10 +185,14 @@
   }
 
   function exportCsv() {
-    const rows = [["response_id", "submitted_at", "nickname", "audience", "style_id", "rating", "price", "intent", "note"]];
-    responses.forEach((response) => Object.entries(response.answers || {}).forEach(([styleId, answer]) => {
-      rows.push([response.id, response.submitted_at || response.submittedAt, response.profile?.nickname || "", response.profile?.audience || "", styleId, answer.rating || "", answer.price || "", answer.intent || "", answer.note || ""]);
-    }));
+    const rows = [["response_id", "submitted_at", "nickname", "audience", "style_id", "rating", "price", "intent", "final_rank", "note"]];
+    responses.forEach((response) => {
+      const ranking = response.final_ranking || response.finalRanking || [];
+      const rankByStyle = new Map((Array.isArray(ranking) ? ranking : []).map((styleId, index) => [styleId, index + 1]));
+      Object.entries(response.answers || {}).forEach(([styleId, answer]) => {
+        rows.push([response.id, response.submitted_at || response.submittedAt, response.profile?.nickname || "", response.profile?.audience || "", styleId, answer.rating || "", answer.price || "", answer.intent || "", rankByStyle.get(styleId) || "", answer.note || ""]);
+      });
+    });
     const csv = rows.map((row) => row.map(csvCell).join(",")).join("\n");
     const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
     const link = document.createElement("a");
@@ -187,8 +225,8 @@
     return `"${String(value ?? "").replace(/"/g, '""')}"`;
   }
 
-  function emptyRow(columns) {
-    return `<tr><td colspan="${columns}">No responses yet.</td></tr>`;
+  function emptyRow(columns, message = "No responses yet.") {
+    return `<tr><td colspan="${columns}">${escapeHtml(message)}</td></tr>`;
   }
 
   function escapeHtml(value) {

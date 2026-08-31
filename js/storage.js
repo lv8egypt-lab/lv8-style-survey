@@ -113,6 +113,7 @@
       profile: record.profile,
       answers: record.answers,
       comparisons: record.comparisons,
+      final_ranking: record.finalRanking || [],
       started_at: record.startedAt,
       submitted_at: record.submittedAt,
       user_agent: navigator.userAgent.slice(0, 500)
