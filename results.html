@@ -7,11 +7,11 @@
     <meta name="robots" content="noindex,nofollow">
     <title>LV8 Survey Results</title>
     <link rel="icon" href="assets/brand/icon.png">
-    <link rel="stylesheet" href="styles.css?v=20260901-top5">
-    <script src="js/config.js?v=20260901-top5" defer></script>
-    <script src="js/data.js?v=20260901-top5" defer></script>
-    <script src="js/storage.js?v=20260901-top5" defer></script>
-    <script src="js/results.js?v=20260901-top5" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260901-response-detail">
+    <script src="js/config.js?v=20260901-response-detail" defer></script>
+    <script src="js/data.js?v=20260901-response-detail" defer></script>
+    <script src="js/storage.js?v=20260901-response-detail" defer></script>
+    <script src="js/results.js?v=20260901-response-detail" defer></script>
   </head>
   <body>
     <header class="topbar">
@@ -84,7 +84,8 @@
         </section>
 
         <section class="panel">
-          <h2>Latest responses</h2>
+          <h2>Individual responses</h2>
+          <p class="panel-intro">Select any participant name to view their complete survey.</p>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Name</th><th>Group</th><th>Styles</th><th>Average</th><th>Date</th></tr></thead>
@@ -94,6 +95,52 @@
         </section>
       </section>
     </main>
+
+    <dialog class="response-dialog" id="responseDetailDialog" aria-labelledby="responseDetailTitle">
+      <div class="response-detail-shell">
+        <header class="response-detail-header">
+          <div>
+            <p class="eyebrow">INDIVIDUAL RESPONSE</p>
+            <h2 id="responseDetailTitle">Survey details</h2>
+            <p id="responseDetailMeta"></p>
+          </div>
+          <button class="response-dialog-close" id="responseDetailClose" type="button" aria-label="Close response details">&times;</button>
+        </header>
+
+        <div class="response-detail-body">
+          <div class="response-detail-metrics">
+            <article><span>Product group</span><strong id="detailAudience">&mdash;</strong></article>
+            <article><span>Styles rated</span><strong id="detailStyleCount">0</strong></article>
+            <article><span>Average rating</span><strong id="detailAverage">0 / 5</strong></article>
+            <article><span>Top choice</span><strong id="detailTopChoice">&mdash;</strong></article>
+          </div>
+
+          <section class="response-detail-section">
+            <div class="response-detail-section-heading">
+              <h3>Final Top Five</h3>
+              <p>The participant's final order from first to fifth.</p>
+            </div>
+            <div class="detail-top-five" id="detailTopFive"></div>
+          </section>
+
+          <section class="response-detail-section">
+            <div class="response-detail-section-heading">
+              <h3>Product ratings</h3>
+              <p>Rating, expected price, purchase intent, final rank, and notes for every style.</p>
+            </div>
+            <div class="response-answer-grid" id="detailAnswers"></div>
+          </section>
+
+          <section class="response-detail-section">
+            <div class="response-detail-section-heading">
+              <h3>Direct comparisons</h3>
+              <p>The option selected in each comparison shown to this participant.</p>
+            </div>
+            <div class="response-comparison-list" id="detailComparisons"></div>
+          </section>
+        </div>
+      </div>
+    </dialog>
 
     <footer class="site-footer"><span>LV8 — ELEVATE EVERYTHING.</span><span>PRIVATE ADMIN VIEW</span></footer>
   </body>

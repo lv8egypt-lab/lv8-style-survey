@@ -11,7 +11,10 @@
     [
       "resultsAuth", "authExplanation", "resultsEmail", "resultsPassword", "resultsLoginButton",
       "resultsAuthStatus", "resultsDashboard", "metricResponses", "metricCoverage", "metricWinner",
-      "metricPrice", "rankingBody", "comparisonBody", "topFiveBody", "responseBody", "exportButton"
+      "metricPrice", "rankingBody", "comparisonBody", "topFiveBody", "responseBody", "exportButton",
+      "responseDetailDialog", "responseDetailClose", "responseDetailTitle", "responseDetailMeta",
+      "detailAudience", "detailStyleCount", "detailAverage", "detailTopChoice", "detailTopFive",
+      "detailAnswers", "detailComparisons"
     ].forEach((id) => { elements[id] = document.getElementById(id); });
   }
 
@@ -19,6 +22,11 @@
     cache();
     elements.resultsLoginButton.addEventListener("click", login);
     elements.exportButton.addEventListener("click", exportCsv);
+    elements.responseBody.addEventListener("click", handleResponseClick);
+    elements.responseDetailClose.addEventListener("click", closeResponseDetail);
+    elements.responseDetailDialog.addEventListener("click", (event) => {
+      if (event.target === elements.responseDetailDialog) closeResponseDetail();
+    });
 
     if (!window.LV8Storage.isConfigured()) {
       elements.authExplanation.textContent = "The site is in preview mode. Only responses saved on this device will be shown.";
@@ -127,11 +135,115 @@
 
     renderComparisons();
     renderTopFiveResults();
-    elements.responseBody.innerHTML = responses.slice(0, 30).map((row) => {
+    elements.responseBody.innerHTML = responses.map((row, index) => {
       const answers = Object.values(row.answers || {});
       const average = answers.length ? answers.reduce((sum, answer) => sum + Number(answer.rating || 0), 0) / answers.length : 0;
-      return `<tr><td>${escapeHtml(row.profile?.nickname || "Anonymous")}</td><td>${audienceLabel(row.profile?.audience)}</td><td>${answers.length}</td><td>${average.toFixed(1)} / 5</td><td>${formatDate(row.submitted_at || row.submittedAt)}</td></tr>`;
+      const nickname = row.profile?.nickname || "Anonymous";
+      return `<tr><td><button class="respondent-link" type="button" data-response-index="${index}" aria-label="View complete survey from ${escapeHtml(nickname)}">${escapeHtml(nickname)}</button></td><td>${audienceLabel(row.profile?.audience)}</td><td>${answers.length}</td><td>${average.toFixed(1)} / 5</td><td>${formatDate(row.submitted_at || row.submittedAt)}</td></tr>`;
     }).join("") || emptyRow(5);
+  }
+
+  function handleResponseClick(event) {
+    const button = event.target.closest("[data-response-index]");
+    if (!button) return;
+    const response = responses[Number(button.dataset.responseIndex)];
+    if (response) openResponseDetail(response);
+  }
+
+  function openResponseDetail(response) {
+    const styleMap = new Map(styles.map((style) => [style.id, style]));
+    const styleOrder = new Map(styles.map((style, index) => [style.id, index]));
+    const answerEntries = Object.entries(response.answers || {}).sort((a, b) => (styleOrder.get(a[0]) ?? 999) - (styleOrder.get(b[0]) ?? 999));
+    const savedRanking = response.final_ranking || response.finalRanking;
+    const ranking = Array.isArray(savedRanking) ? savedRanking.slice(0, 5) : [];
+    const rankByStyle = new Map(ranking.map((styleId, index) => [styleId, index + 1]));
+    const average = answerEntries.length ? answerEntries.reduce((sum, [, answer]) => sum + Number(answer.rating || 0), 0) / answerEntries.length : 0;
+    const nickname = response.profile?.nickname || "Anonymous";
+
+    elements.responseDetailTitle.textContent = nickname;
+    elements.responseDetailMeta.textContent = `Submitted ${formatDate(response.submitted_at || response.submittedAt)}`;
+    elements.detailAudience.textContent = audienceLabel(response.profile?.audience);
+    elements.detailStyleCount.textContent = answerEntries.length;
+    elements.detailAverage.textContent = `${average.toFixed(1)} / 5`;
+    elements.detailTopChoice.textContent = ranking.length ? styleLabel(styleMap.get(ranking[0]), ranking[0], true) : "Not ranked";
+
+    elements.detailTopFive.innerHTML = ranking.length ? ranking.map((styleId, index) => {
+      const style = styleMap.get(styleId);
+      const image = style?.images?.[0] || "assets/brand/icon.png";
+      return `<article class="detail-top-five-card">
+        <span class="detail-rank">#${index + 1}</span>
+        <img src="${escapeHtml(image)}" alt="${escapeHtml(styleLabel(style, styleId))}" loading="lazy">
+        <strong>${escapeHtml(styleLabel(style, styleId))}</strong>
+      </article>`;
+    }).join("") : detailEmpty("This response was submitted before final Top Five ranking was added.");
+
+    elements.detailAnswers.innerHTML = answerEntries.length ? answerEntries.map(([styleId, answer]) => {
+      const style = styleMap.get(styleId);
+      const image = style?.images?.[0] || "assets/brand/icon.png";
+      const rank = rankByStyle.get(styleId);
+      const note = String(answer.note || "").trim();
+      return `<article class="response-answer-card">
+        <div class="response-answer-image">
+          <img src="${escapeHtml(image)}" alt="${escapeHtml(styleLabel(style, styleId))}" loading="lazy">
+          ${rank ? `<span>#${rank}</span>` : ""}
+        </div>
+        <div class="response-answer-copy">
+          <div class="response-answer-heading">
+            <strong>${escapeHtml(styleLabel(style, styleId))}</strong>
+            <span class="answer-stars" aria-label="${Number(answer.rating || 0)} out of 5 stars">${ratingStars(answer.rating)}</span>
+          </div>
+          <dl class="response-answer-values">
+            <div><dt>Rating</dt><dd>${Number(answer.rating || 0)} / 5</dd></div>
+            <div><dt>Expected price</dt><dd>${escapeHtml(priceLabel(answer.price))}</dd></div>
+            <div><dt>Purchase intent</dt><dd>${escapeHtml(intentLabel(answer.intent))}</dd></div>
+            <div><dt>Final rank</dt><dd>${rank ? `#${rank}` : "Not ranked"}</dd></div>
+          </dl>
+          ${note ? `<p class="response-note"><span>Note</span>${escapeHtml(note)}</p>` : ""}
+        </div>
+      </article>`;
+    }).join("") : detailEmpty("No product ratings were saved in this response.");
+
+    const comparisonEntries = Object.entries(response.comparisons || {});
+    elements.detailComparisons.innerHTML = comparisonEntries.length ? comparisonEntries.map(([comparisonId, optionId]) => {
+      const comparison = comparisons.find((item) => item.id === comparisonId);
+      const option = comparison?.options?.find((item) => item.id === optionId);
+      return `<article class="response-comparison-card">
+        <span>${escapeHtml(comparison?.questionAr || comparisonId)}</span>
+        <strong>${escapeHtml(option?.labelAr || optionId)}</strong>
+      </article>`;
+    }).join("") : detailEmpty("No direct comparison choices were saved in this response.");
+
+    if (typeof elements.responseDetailDialog.showModal === "function") elements.responseDetailDialog.showModal();
+    else elements.responseDetailDialog.setAttribute("open", "");
+  }
+
+  function closeResponseDetail() {
+    if (typeof elements.responseDetailDialog.close === "function") elements.responseDetailDialog.close();
+    else elements.responseDetailDialog.removeAttribute("open");
+  }
+
+  function styleLabel(style, fallback, compact = false) {
+    if (!style) return fallback;
+    return compact ? style.code : `${style.code} — ${style.nameEn || style.nameAr}`;
+  }
+
+  function priceLabel(value) {
+    const match = window.LV8_SURVEY_DATA.priceRanges.find((item) => item.id === value);
+    return match?.label || shortPrice(value);
+  }
+
+  function intentLabel(value) {
+    const match = window.LV8_SURVEY_DATA.purchaseIntents.find((item) => item.id === value);
+    return match?.label || value || "No answer";
+  }
+
+  function ratingStars(value) {
+    const rating = Math.max(0, Math.min(5, Number(value || 0)));
+    return `${"★".repeat(rating)}${"☆".repeat(5 - rating)}`;
+  }
+
+  function detailEmpty(message) {
+    return `<p class="detail-empty">${escapeHtml(message)}</p>`;
   }
 
   function renderTopFiveResults() {
@@ -218,7 +330,7 @@
 
   function formatDate(value) {
     if (!value) return "—";
-    try { return new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)); } catch { return value; }
+    try { return new Intl.DateTimeFormat("en-EG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)); } catch { return value; }
   }
 
   function csvCell(value) {
