@@ -173,17 +173,17 @@ legend { margin-bottom: 10px; font-weight: 700; }
 .progress-track { height: 6px; overflow: hidden; background: #dedbd5; border-radius: 999px; }
 .progress-track span { display: block; width: 0; height: 100%; background: var(--signal); border-radius: inherit; transition: width .25s ease; }
 .style-stage { display: grid; grid-template-columns: minmax(360px, 1.08fr) minmax(390px, .92fr); min-height: 720px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--white); box-shadow: 0 14px 46px rgba(17,17,17,.08); }
-.gallery-panel { position: relative; min-height: 720px; padding: 20px; background: #e9e7e2; }
+.gallery-panel { position: relative; min-width: 0; min-height: 720px; padding: 20px; background: #e9e7e2; }
 .image-frame { position: relative; height: 620px; overflow: hidden; border-radius: 18px; background: #dad7d1; }
 .image-frame img { width: 100%; height: 100%; object-fit: contain; background: #efede9; transition: opacity .2s ease; }
 .image-counter { position: absolute; inset: auto 14px 14px auto; direction: ltr; padding: 6px 9px; border-radius: 999px; background: rgba(17,17,17,.78); color: white; font: 700 11px/1 var(--font-latin); }
 .expand-button { position: absolute; z-index: 2; inset: 32px 32px auto auto; width: 42px; height: 42px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(255,255,255,.9); font-size: 20px; box-shadow: 0 7px 20px rgba(17,17,17,.12); }
-.thumbnail-strip { display: flex; gap: 9px; overflow-x: auto; padding-top: 13px; scrollbar-width: thin; }
+.thumbnail-strip { width: 100%; max-width: 100%; display: flex; gap: 9px; overflow-x: auto; padding-top: 13px; scrollbar-width: thin; }
 .thumbnail-button { flex: 0 0 58px; width: 58px; height: 58px; padding: 0; overflow: hidden; border: 2px solid transparent; border-radius: 10px; background: #d7d4cd; }
 .thumbnail-button img { width: 100%; height: 100%; object-fit: cover; }
 .thumbnail-button.selected { border-color: var(--signal); }
 
-.rating-panel { padding: clamp(28px, 4vw, 60px); overflow-y: auto; }
+.rating-panel { min-width: 0; padding: clamp(28px, 4vw, 60px); overflow-y: auto; }
 .style-heading { padding-bottom: 25px; border-bottom: 1px solid var(--line); }
 .style-code { direction: ltr; display: inline-flex; margin-inline-end: 7px; color: var(--signal-deep); font: 800 12px/1 var(--font-latin); letter-spacing: .12em; }
 .category-pill { display: inline-flex; padding: 6px 9px; border-radius: 999px; background: var(--signal-tint); color: #7c1c0c; font: 700 10px/1 var(--font-latin); text-transform: uppercase; }
@@ -276,7 +276,7 @@ th { color: var(--concrete); font-size: 11px; }
   :root { --page: min(100% - 28px, 760px); }
   .welcome { grid-template-columns: 1fr; padding-top: 38px; }
   .welcome-visual { min-height: 560px; max-width: 680px; width: 100%; margin-inline: auto; }
-  .style-stage { grid-template-columns: 1fr; }
+  .style-stage { grid-template-columns: minmax(0, 1fr); }
   .gallery-panel { min-height: auto; }
   .image-frame { height: min(72vh, 680px); }
   .rating-panel { overflow: visible; }
@@ -289,7 +289,10 @@ th { color: var(--concrete); font-size: 11px; }
   .topbar { min-height: 72px; }
   .brand-mark { width: 62px; height: 34px; }
   .brand-copy small { display: none; }
-  .mode-badge { max-width: 124px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .mode-badge { max-width: none; padding-inline: 10px; font-size: 0; }
+  .mode-badge::after { font-size: 11px; }
+  .mode-badge.live::after { content: "Survey live"; }
+  .mode-badge.demo::after { content: "Preview mode"; }
   .welcome { min-height: auto; gap: 34px; padding-block: 32px 50px; }
   h1 { font-size: clamp(43px, 14vw, 64px); }
   .lede { margin-block: 18px; }
@@ -307,7 +310,7 @@ th { color: var(--concrete); font-size: 11px; }
   .image-frame { height: 500px; border-radius: 14px; }
   .expand-button { inset: 20px 20px auto auto; }
   .rating-panel { padding: 24px 18px; }
-  .star-button { width: 43px; }
+  .star-button { width: 44px; }
   .choice-grid-three { grid-template-columns: 1fr; }
   .survey-actions { grid-template-columns: 1fr 1.6fr; }
   .compare-view { padding-block: 46px 65px; }
