@@ -1,10 +1,10 @@
 (function () {
   "use strict";
 
-  const collectionVersion = "2026-09-01-v5";
+  const collectionVersion = "2026-09-01-v6";
   const draftKey = `lv8-survey-draft:${window.LV8_CONFIG?.surveyId || "default"}:${collectionVersion}`;
   const ratingLabels = ["Not for me", "Weak", "Average", "Strong", "Must launch"];
-  let styles = [...window.LV8_SURVEY_DATA.styles];
+  let styles = window.LV8_SURVEY_DATA.styles.map(applyCatalogMedia);
   let comparisons = [...window.LV8_SURVEY_DATA.comparisons];
   let filteredStyles = [];
   let filteredComparisons = [];
@@ -17,6 +17,15 @@
 
   function makeId() {
     return crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function applyCatalogMedia(style) {
+    const media = window.LV8_CATALOG_IMAGES?.[style.id];
+    return media ? { ...style, images: [...media.images], thumbnails: [...media.thumbnails] } : style;
+  }
+
+  function thumbnailFor(style, index = 0) {
+    return style.thumbnails?.[index] || style.images[index];
   }
 
   function makeFreshState() {
@@ -210,6 +219,7 @@
     elements.nextStyleButton.innerHTML = currentStyleIndex === filteredStyles.length - 1 ? "Start comparisons <span aria-hidden=\"true\">→</span>" : "Next <span aria-hidden=\"true\">→</span>";
     elements.validationMessage.textContent = "";
     persistDraft();
+    preloadNextStyle();
   }
 
   function renderGallery(style) {
@@ -220,9 +230,10 @@
       button.className = `thumbnail-button${index === 0 ? " selected" : ""}`;
       button.setAttribute("aria-label", `View image ${index + 1}`);
       const image = document.createElement("img");
-      image.src = src;
+      image.src = thumbnailFor(style, index);
       image.alt = "";
-      image.loading = index > 4 ? "lazy" : "eager";
+      image.loading = index === 0 ? "eager" : "lazy";
+      image.decoding = "async";
       button.appendChild(image);
       button.addEventListener("click", () => setGalleryImage(style, index));
       elements.thumbnailStrip.appendChild(button);
@@ -236,6 +247,14 @@
     elements.mainStyleImage.alt = `${style.nameAr} — image ${index + 1}`;
     elements.imageCounter.textContent = `${index + 1} / ${style.images.length}`;
     [...elements.thumbnailStrip.children].forEach((button, buttonIndex) => button.classList.toggle("selected", buttonIndex === index));
+  }
+
+  function preloadNextStyle() {
+    if (navigator.connection?.saveData) return;
+    const nextStyle = filteredStyles[currentStyleIndex + 1];
+    if (!nextStyle?.images?.[0]) return;
+    const image = new Image();
+    image.src = nextStyle.images[0];
   }
 
   function previewStars(rating) {
@@ -320,7 +339,7 @@
         button.type = "button";
         button.className = `compare-option${state.comparisons[comparison.id] === option.id ? " selected" : ""}`;
         button.dataset.value = option.id;
-        button.innerHTML = `<img src="${escapeAttribute(style.images[0])}" alt="${escapeAttribute(option.labelAr)}"><span>${escapeHtml(option.labelAr)}</span>`;
+        button.innerHTML = `<img src="${escapeAttribute(thumbnailFor(style))}" alt="${escapeAttribute(option.labelAr)}" loading="lazy" decoding="async"><span>${escapeHtml(option.labelAr)}</span>`;
         button.addEventListener("click", () => {
           state.comparisons[comparison.id] = option.id;
           [...options.children].forEach((child) => child.classList.toggle("selected", child === button));
@@ -377,7 +396,7 @@
       button.setAttribute("aria-label", rank ? `${style.nameAr}, ranked number ${rank}. Select to remove.` : `${style.nameAr}. Select as number ${state.finalRanking.length + 1}.`);
       button.innerHTML = `
         <span class="ranking-image">
-          <img src="${escapeAttribute(style.images[0])}" alt="${escapeAttribute(style.nameAr)}">
+          <img src="${escapeAttribute(thumbnailFor(style))}" alt="${escapeAttribute(style.nameAr)}" loading="lazy" decoding="async">
           <strong class="ranking-badge">${rank ? `#${rank}` : "+"}</strong>
         </span>
         <span class="ranking-copy">

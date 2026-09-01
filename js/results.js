@@ -4,9 +4,18 @@
   const elements = {};
   let accessToken = "";
   let responses = [];
-  let styles = [...window.LV8_SURVEY_DATA.styles];
+  let styles = window.LV8_SURVEY_DATA.styles.map(applyCatalogMedia);
   const archivedStyles = [...(window.LV8_SURVEY_DATA.archivedStyles || [])];
   let comparisons = [...window.LV8_SURVEY_DATA.comparisons];
+
+  function applyCatalogMedia(style) {
+    const media = window.LV8_CATALOG_IMAGES?.[style.id];
+    return media ? { ...style, images: [...media.images], thumbnails: [...media.thumbnails] } : style;
+  }
+
+  function thumbnailFor(style) {
+    return style?.thumbnails?.[0] || style?.images?.[0] || "assets/brand/icon.png";
+  }
 
   function cache() {
     [
@@ -175,17 +184,17 @@
 
     elements.detailTopFive.innerHTML = ranking.length ? ranking.map((styleId, index) => {
       const style = styleMap.get(styleId);
-      const image = style?.images?.[0] || "assets/brand/icon.png";
+      const image = thumbnailFor(style);
       return `<article class="detail-top-five-card">
         <span class="detail-rank">#${index + 1}</span>
-        <img src="${escapeHtml(image)}" alt="${escapeHtml(styleLabel(style, styleId))}" loading="lazy">
+        <img src="${escapeHtml(image)}" alt="${escapeHtml(styleLabel(style, styleId))}" loading="lazy" decoding="async">
         <strong>${escapeHtml(styleLabel(style, styleId))}</strong>
       </article>`;
     }).join("") : detailEmpty("This response was submitted before final Top Five ranking was added.");
 
     elements.detailAnswers.innerHTML = answerEntries.length ? answerEntries.map(([styleId, answer]) => {
       const style = styleMap.get(styleId);
-      const image = style?.images?.[0] || "assets/brand/icon.png";
+      const image = thumbnailFor(style);
       const rank = rankByStyle.get(styleId);
       const note = String(answer.note || "").trim();
       return `<article class="response-answer-card">

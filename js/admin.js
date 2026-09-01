@@ -69,7 +69,7 @@
   }
 
   function renderRemoteStyles() {
-    elements.adminStylesBody.innerHTML = remoteStyles.map((style) => `<tr><td><strong>${escapeHtml(style.code)}</strong></td><td>${escapeHtml(style.nameAr)}</td><td>${escapeHtml(style.audience)}</td><td>${style.images.length}</td></tr>`).join("") || '<tr><td colspan="4">No cloud styles yet. The 13 built-in styles remain available in the site files.</td></tr>';
+    elements.adminStylesBody.innerHTML = remoteStyles.map((style) => `<tr><td><strong>${escapeHtml(style.code)}</strong></td><td>${escapeHtml(style.nameAr)}</td><td>${escapeHtml(style.audience)}</td><td>${style.images.length}</td></tr>`).join("") || '<tr><td colspan="4">No cloud-only styles yet. The 23 built-in styles remain available in the site files.</td></tr>';
   }
 
   async function uploadStyle(event) {

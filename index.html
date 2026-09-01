@@ -13,9 +13,10 @@
     <link rel="icon" href="assets/brand/icon.png">
     <link rel="stylesheet" href="styles.css?v=20260901-top5">
     <script src="js/config.js?v=20260901-top5" defer></script>
-    <script src="js/data.js?v=20260901-collection-v5" defer></script>
+    <script src="js/data.js?v=20260901-fast-catalog" defer></script>
+    <script src="js/catalog-images.js?v=20260901-fast-catalog" defer></script>
     <script src="js/storage.js?v=20260901-top5" defer></script>
-    <script src="js/app.js?v=20260901-collection-v5" defer></script>
+    <script src="js/app.js?v=20260901-fast-catalog" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -69,10 +70,10 @@
 
         <div class="welcome-visual" aria-hidden="true">
           <div class="visual-card visual-card-back">
-            <img src="assets/styles/women12/1.png" alt="">
+            <img src="assets/catalog/women12/1.webp" alt="" decoding="async">
           </div>
           <div class="visual-card visual-card-front">
-            <img src="assets/styles/men5-v1/1.webp" alt="">
+            <img src="assets/catalog/men5-v1/1.webp" alt="" decoding="async">
             <span class="floating-rating">★★★★★</span>
           </div>
           <span class="motion-label">MOVE / RATE / PICK</span>
@@ -95,7 +96,7 @@
           <div class="gallery-panel">
             <button class="expand-button" id="expandImageButton" type="button" aria-label="Enlarge image">↗</button>
             <div class="image-frame">
-              <img id="mainStyleImage" src="" alt="">
+              <img id="mainStyleImage" src="" alt="" decoding="async" fetchpriority="high">
               <span class="image-counter" id="imageCounter">1 / 1</span>
             </div>
             <div class="thumbnail-strip" id="thumbnailStrip" aria-label="Style images"></div>
