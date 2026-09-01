@@ -22,6 +22,9 @@ const assert = (condition, message) => { if (!condition) errors.push(message); }
 assert(data && Array.isArray(data.styles), "Survey data did not expose a styles array.");
 assert(data && Array.isArray(data.archivedStyles), "Survey data did not expose an archived styles array.");
 assert(data && Array.isArray(data.comparisons), "Survey data did not expose a comparisons array.");
+assert(data && data.priceGroups && typeof data.priceGroups === "object", "Survey data did not expose category price groups.");
+assert(data && Array.isArray(data.reasonOptions), "Survey data did not expose reason options.");
+assert(data && data.profileOptions && typeof data.profileOptions === "object", "Survey data did not expose respondent profile options.");
 assert(catalogMedia && typeof catalogMedia === "object", "Optimized image catalog was not generated.");
 
 if (data?.styles && data?.comparisons && catalogMedia) {
@@ -38,6 +41,9 @@ if (data?.styles && data?.comparisons && catalogMedia) {
 
   assert(data.styles.length === 23, `Expected 23 styles, found ${data.styles.length}.`);
   assert(data.comparisons.length === 7, `Expected 7 comparisons, found ${data.comparisons.length}.`);
+  assert(["top", "short", "outerwear", "set"].every((group) => data.priceGroups[group]?.options?.length === 3), "Each category price group must contain three options.");
+  assert(data.reasonOptions.length === 9, `Expected 9 reason tags, found ${data.reasonOptions.length}.`);
+  assert(["age", "city", "primaryUse", "budget", "fit"].every((group) => data.profileOptions[group]?.length > 0), "Every respondent profile group must contain options.");
   assert(menCount === 8, `Expected 8 men's styles, found ${menCount}.`);
   assert(womenCount === 15, `Expected 15 women's styles, found ${womenCount}.`);
   assert(styleIds.size === data.styles.length, "Style IDs are not unique.");
@@ -68,6 +74,7 @@ if (data?.styles && data?.comparisons && catalogMedia) {
   }
 
   for (const comparison of data.comparisons) {
+    assert(typeof comparison.testVariable === "string" && comparison.testVariable.length > 5, `${comparison.id} is missing a controlled test-variable label.`);
     assert(comparison.options?.length >= 2, `${comparison.id} needs at least two options.`);
     for (const option of comparison.options || []) {
       assert(styleIds.has(option.styleId), `${comparison.id} references unknown style ${option.styleId}.`);

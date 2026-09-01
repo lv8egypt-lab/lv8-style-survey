@@ -5,11 +5,99 @@ window.LV8_SURVEY_DATA = Object.freeze({
     { id: "1500-2000", label: "EGP 1,500-2,000" },
     { id: "2000-3000", label: "EGP 2,000-3,000" }
   ],
+  priceGroups: {
+    top: {
+      question: "What is the maximum price you would pay for this top?",
+      hint: "Choose the highest range you would genuinely accept for this single item.",
+      options: [
+        { id: "top-700-1000", label: "EGP 700-1,000" },
+        { id: "top-1000-1500", label: "EGP 1,000-1,500" },
+        { id: "top-1500-2000", label: "EGP 1,500-2,000" }
+      ]
+    },
+    short: {
+      question: "What is the maximum price you would pay for these shorts?",
+      hint: "Choose the highest range you would genuinely accept for this single item.",
+      options: [
+        { id: "short-700-1000", label: "EGP 700-1,000" },
+        { id: "short-1000-1500", label: "EGP 1,000-1,500" },
+        { id: "short-1500-2000", label: "EGP 1,500-2,000" }
+      ]
+    },
+    outerwear: {
+      question: "What is the maximum price you would pay for this jacket?",
+      hint: "Choose the highest range you would genuinely accept for this single outer layer.",
+      options: [
+        { id: "outerwear-1200-1800", label: "EGP 1,200-1,800" },
+        { id: "outerwear-1800-2500", label: "EGP 1,800-2,500" },
+        { id: "outerwear-2500-3500", label: "EGP 2,500-3,500" }
+      ]
+    },
+    set: {
+      question: "What is the maximum price you would pay for this complete set?",
+      hint: "Rate the full outfit shown, including both the top and bottom.",
+      options: [
+        { id: "set-1500-2000", label: "EGP 1,500-2,000" },
+        { id: "set-2000-3000", label: "EGP 2,000-3,000" },
+        { id: "set-3000-4500", label: "EGP 3,000-4,500" }
+      ]
+    }
+  },
   purchaseIntents: [
     { id: "yes", label: "Yes, I would buy it" },
     { id: "maybe", label: "Maybe - depending on quality and price" },
     { id: "no", label: "Not for me" }
   ],
+  reasonOptions: [
+    { id: "silhouette", label: "Strong silhouette", sentiment: "positive" },
+    { id: "comfortable", label: "Looks comfortable", sentiment: "positive" },
+    { id: "easy-style", label: "Easy to style", sentiment: "positive" },
+    { id: "premium", label: "Looks premium", sentiment: "positive" },
+    { id: "colors", label: "Good color direction", sentiment: "positive" },
+    { id: "too-basic", label: "Too basic", sentiment: "concern" },
+    { id: "too-oversized", label: "Too oversized", sentiment: "concern" },
+    { id: "not-my-style", label: "Not my style", sentiment: "concern" },
+    { id: "price-concern", label: "Price concern", sentiment: "concern" }
+  ],
+  profileOptions: {
+    age: [
+      { id: "18-20", label: "18-20" },
+      { id: "21-24", label: "21-24" },
+      { id: "25-29", label: "25-29" },
+      { id: "30-39", label: "30-39" },
+      { id: "40-plus", label: "40+" }
+    ],
+    city: [
+      { id: "cairo-giza", label: "Cairo / Giza" },
+      { id: "alexandria", label: "Alexandria" },
+      { id: "delta", label: "Delta / Lower Egypt" },
+      { id: "upper-egypt", label: "Upper Egypt" },
+      { id: "other-egypt", label: "Other Egypt" },
+      { id: "outside-egypt", label: "Outside Egypt" }
+    ],
+    primaryUse: [
+      { id: "training", label: "Training / running" },
+      { id: "everyday", label: "Everyday movement" },
+      { id: "university", label: "University" },
+      { id: "work-cafe", label: "Work / cafés" },
+      { id: "travel", label: "Travel / weekends" },
+      { id: "streetwear", label: "Street styling" },
+      { id: "modest", label: "Modest lifestyle" }
+    ],
+    budget: [
+      { id: "under-1000", label: "Under EGP 1,000" },
+      { id: "1000-2000", label: "EGP 1,000-2,000" },
+      { id: "2000-3000", label: "EGP 2,000-3,000" },
+      { id: "3000-plus", label: "EGP 3,000+" }
+    ],
+    fit: [
+      { id: "slim", label: "Slim / fitted" },
+      { id: "regular", label: "Regular" },
+      { id: "oversized", label: "Oversized" },
+      { id: "wide-leg", label: "Wide-leg / relaxed" },
+      { id: "modest-coverage", label: "Modest coverage" }
+    ]
+  },
   styles: [
     {
       id: "men-storm-shell-set", code: "M01", audience: "men", category: "Performance / Outerwear",
@@ -186,6 +274,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
   comparisons: [
     {
       id: "men-shell-direction", audience: "men",
+      testVariable: "Clean technical styling versus bold panel styling",
       questionAr: "Which men's jacket direction is stronger?",
       noteAr: "Choose the one you would realistically wear more often during the week.",
       options: [
@@ -195,6 +284,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
     },
     {
       id: "men-yoke-shell-direction", audience: "men",
+      testVariable: "Color-block intensity on the same shell-set idea",
       questionAr: "Which hooded shell-set direction should LV8 develop?",
       noteAr: "Compare the overall color-block treatment, not only your favorite color.",
       options: [
@@ -205,6 +295,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
     },
     {
       id: "women-track-direction", audience: "women",
+      testVariable: "Wide color blocking versus fine sport piping",
       questionAr: "Which women's track-set direction do you prefer?",
       noteAr: "Choose the overall design direction, not the color alone.",
       options: [
@@ -214,6 +305,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
     },
     {
       id: "women-closure-direction", audience: "women",
+      testVariable: "Closure only: crew neck, half zip, or full zip",
       questionAr: "Which closure works best for the oversized red layer?",
       noteAr: "Choose the version you would find easiest to wear and style.",
       options: [
@@ -224,6 +316,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
     },
     {
       id: "women-modest-closure", audience: "women",
+      testVariable: "Closure system: pullover versus full zip",
       questionAr: "For the modest set: full zip or pullover?",
       noteAr: "Which version would be easier to wear and style?",
       options: [
@@ -233,6 +326,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
     },
     {
       id: "women-performance-top", audience: "women",
+      testVariable: "Everyday short-sleeve versatility versus extended coverage",
       questionAr: "Which performance top deserves a place in the first drop?",
       noteAr: "Choose based on how often you would actually use it.",
       options: [
@@ -242,6 +336,7 @@ window.LV8_SURVEY_DATA = Object.freeze({
     },
     {
       id: "women-soft-set-direction", audience: "women",
+      testVariable: "Clean piping versus motion-line graphics",
       questionAr: "Which soft lifestyle set has the stronger LV8 direction?",
       noteAr: "Compare the silhouette and graphic treatment rather than the color alone.",
       options: [

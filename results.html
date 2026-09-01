@@ -7,29 +7,23 @@
     <meta name="robots" content="noindex,nofollow">
     <title>LV8 Survey Results</title>
     <link rel="icon" href="assets/brand/icon.png">
-    <link rel="stylesheet" href="styles.css?v=20260901-response-detail">
-    <script src="js/config.js?v=20260901-response-detail" defer></script>
-    <script src="js/data.js?v=20260901-fast-catalog" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260901-survey-v7">
+    <script src="js/config.js?v=20260901-survey-v7" defer></script>
+    <script src="js/data.js?v=20260901-survey-v7" defer></script>
     <script src="js/catalog-images.js?v=20260901-fast-catalog" defer></script>
-    <script src="js/storage.js?v=20260901-response-detail" defer></script>
-    <script src="js/results.js?v=20260901-fast-catalog" defer></script>
+    <script src="js/storage.js?v=20260901-survey-v7" defer></script>
+    <script src="js/results.js?v=20260901-survey-v7" defer></script>
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="index.html">
-        <span class="brand-mark"><img src="assets/brand/logo.png" alt="LV8"></span>
-        <span class="brand-copy"><strong>RESULTS</strong><small>STYLE RESEARCH DASHBOARD</small></span>
-      </a>
+      <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/brand/logo.png" alt="LV8"></span><span class="brand-copy"><strong>RESULTS</strong><small>STYLE RESEARCH DASHBOARD</small></span></a>
       <a class="button button-secondary" href="admin.html">Manage styles</a>
     </header>
 
     <main class="page-shell utility-page">
       <header class="utility-header">
-        <div>
-          <p class="eyebrow">LV8 STYLE PICK</p>
-          <h1>Survey<br><span>results.</span></h1>
-        </div>
-        <p>Rank the styles by star rating, purchase intent, expected price, direct comparisons, and each respondent's final top five.</p>
+        <div><p class="eyebrow">LV8 STYLE PICK</p><h1>Survey<br><span>results.</span></h1></div>
+        <p>Use the weighted launch score, then filter by customer segment to see which products win with the people LV8 wants to serve.</p>
       </header>
 
       <section class="auth-card" id="resultsAuth">
@@ -42,103 +36,88 @@
       </section>
 
       <section id="resultsDashboard" hidden>
+        <section class="panel filter-panel">
+          <div class="subsection-heading">
+            <div><p class="eyebrow">SEGMENT VIEW</p><h2>Filter the research.</h2></div>
+            <button class="button button-secondary" id="resetFilters" type="button">Reset filters</button>
+          </div>
+          <div class="filter-grid">
+            <label><span>Product group</span><select id="filterAudience"><option value="">All groups</option><option value="men">Men</option><option value="women">Women</option><option value="both">All products</option></select></label>
+            <label><span>Age</span><select id="filterAge"><option value="">All ages</option></select></label>
+            <label><span>City / region</span><select id="filterCity"><option value="">All locations</option></select></label>
+            <label><span>Main use</span><select id="filterUse"><option value="">All uses</option></select></label>
+            <label><span>Budget</span><select id="filterBudget"><option value="">All budgets</option></select></label>
+            <label><span>Preferred fit</span><select id="filterFit"><option value="">All fits</option></select></label>
+          </div>
+          <p class="filter-summary" id="filterSummary">Showing every response.</p>
+        </section>
+
         <div class="dashboard-grid">
-          <article class="metric-card"><span>Total responses</span><strong id="metricResponses">0</strong></article>
+          <article class="metric-card"><span>Responses in view</span><strong id="metricResponses">0</strong></article>
           <article class="metric-card"><span>Average styles per response</span><strong id="metricCoverage">0</strong></article>
           <article class="metric-card"><span>Leading style</span><strong id="metricWinner">—</strong></article>
-          <article class="metric-card"><span>Most selected price range</span><strong id="metricPrice">—</strong></article>
+          <article class="metric-card"><span>Leader's top price</span><strong id="metricPrice">—</strong></article>
         </div>
 
         <section class="panel">
           <div class="utility-header">
-            <div><h2>Style ranking</h2><p class="panel-intro">Average star rating is the primary measure, supported by weighted purchase intent.</p></div>
-            <button class="button button-secondary" id="exportButton" type="button">Export CSV</button>
+            <div><h2>Launch score</h2><p class="panel-intro">35% rating + 25% purchase intent + 30% Top Five rank + 10% direct comparisons. Price is separate. A style not shown in a comparison receives a neutral comparison score.</p></div>
+            <button class="button button-secondary" id="exportButton" type="button">Export filtered CSV</button>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>#</th><th>Style</th><th>Rating</th><th>Votes</th><th>Purchase intent</th><th>Top price</th><th>Choice strength</th></tr></thead>
-              <tbody id="rankingBody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>#</th><th>Style</th><th>Launch score</th><th>Rating</th><th>Purchase</th><th>Top Five</th><th>Comparison</th><th>Votes</th><th>Top price</th></tr></thead><tbody id="rankingBody"></tbody></table></div>
+        </section>
+
+        <section class="panel">
+          <h2>Why people scored each style</h2>
+          <p class="panel-intro">The most common reason tag and its share of all reason selections for that style.</p>
+          <div class="table-wrap"><table><thead><tr><th>Style</th><th>Most common reason</th><th>Share</th><th>All tags</th></tr></thead><tbody id="reasonBody"></tbody></table></div>
         </section>
 
         <section class="panel">
           <h2>Comparison results</h2>
           <p class="panel-intro">The percentage shows the current winner within each direct comparison.</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Comparison</th><th>Current winner</th><th>Share</th><th>Total votes</th></tr></thead>
-              <tbody id="comparisonBody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Comparison</th><th>Current winner</th><th>Share</th><th>Total votes</th></tr></thead><tbody id="comparisonBody"></tbody></table></div>
         </section>
 
         <section class="panel">
           <h2>Final Top Five</h2>
           <p class="panel-intro">Five points are awarded for first place, then four, three, two, and one. Podium finishes count positions one to three.</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>#</th><th>Style</th><th>Points</th><th>Ranked votes</th><th>First place</th><th>Podium finishes</th></tr></thead>
-              <tbody id="topFiveBody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>#</th><th>Style</th><th>Points</th><th>Ranked votes</th><th>First place</th><th>Podium finishes</th></tr></thead><tbody id="topFiveBody"></tbody></table></div>
         </section>
 
         <section class="panel">
           <h2>Individual responses</h2>
           <p class="panel-intro">Select any participant name to view their complete survey.</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Name</th><th>Group</th><th>Styles</th><th>Average</th><th>Date</th></tr></thead>
-              <tbody id="responseBody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Name</th><th>Group</th><th>Main use</th><th>Styles</th><th>Average</th><th>Date</th></tr></thead><tbody id="responseBody"></tbody></table></div>
         </section>
+
+        <aside class="research-guidance"><strong>Research confidence target</strong><p>Aim for 50–100 qualified completed responses before a launch decision, with at least 30 responses in every audience segment you plan to compare. Treat smaller segments as directional, not conclusive.</p></aside>
       </section>
     </main>
 
     <dialog class="response-dialog" id="responseDetailDialog" aria-labelledby="responseDetailTitle">
       <div class="response-detail-shell">
         <header class="response-detail-header">
-          <div>
-            <p class="eyebrow">INDIVIDUAL RESPONSE</p>
-            <h2 id="responseDetailTitle">Survey details</h2>
-            <p id="responseDetailMeta"></p>
-          </div>
+          <div><p class="eyebrow">INDIVIDUAL RESPONSE</p><h2 id="responseDetailTitle">Survey details</h2><p id="responseDetailMeta"></p></div>
           <button class="response-dialog-close" id="responseDetailClose" type="button" aria-label="Close response details">&times;</button>
         </header>
-
         <div class="response-detail-body">
           <div class="response-detail-metrics">
-            <article><span>Product group</span><strong id="detailAudience">&mdash;</strong></article>
+            <article><span>Product group</span><strong id="detailAudience">—</strong></article>
             <article><span>Styles rated</span><strong id="detailStyleCount">0</strong></article>
             <article><span>Average rating</span><strong id="detailAverage">0 / 5</strong></article>
-            <article><span>Top choice</span><strong id="detailTopChoice">&mdash;</strong></article>
+            <article><span>Top choice</span><strong id="detailTopChoice">—</strong></article>
           </div>
 
-          <section class="response-detail-section">
-            <div class="response-detail-section-heading">
-              <h3>Final Top Five</h3>
-              <p>The participant's final order from first to fifth.</p>
-            </div>
-            <div class="detail-top-five" id="detailTopFive"></div>
-          </section>
+          <section class="response-detail-section"><div class="response-detail-section-heading"><h3>Respondent profile</h3><p>Behavioral and commercial context for interpreting this person's choices.</p></div><div class="profile-detail-grid" id="detailProfile"></div></section>
 
-          <section class="response-detail-section">
-            <div class="response-detail-section-heading">
-              <h3>Product ratings</h3>
-              <p>Rating, expected price, purchase intent, final rank, and notes for every style.</p>
-            </div>
-            <div class="response-answer-grid" id="detailAnswers"></div>
-          </section>
+          <section class="response-detail-section"><div class="response-detail-section-heading"><h3>Final Top Five</h3><p>The participant's final order from first to fifth.</p></div><div class="detail-top-five" id="detailTopFive"></div></section>
 
-          <section class="response-detail-section">
-            <div class="response-detail-section-heading">
-              <h3>Direct comparisons</h3>
-              <p>The option selected in each comparison shown to this participant.</p>
-            </div>
-            <div class="response-comparison-list" id="detailComparisons"></div>
-          </section>
+          <section class="response-detail-section"><div class="response-detail-section-heading"><h3>Final feedback</h3><p>The single launch choice and anything they felt was missing.</p></div><div class="profile-detail-grid"><article><span>Launch only one</span><strong id="detailSingleLaunch">—</strong></article><article><span>Missing from collection</span><strong id="detailMissingProduct">—</strong></article></div></section>
+
+          <section class="response-detail-section"><div class="response-detail-section-heading"><h3>Product ratings</h3><p>Rating, maximum price, purchase intent, reasons, final rank, and notes for every style.</p></div><div class="response-answer-grid" id="detailAnswers"></div></section>
+
+          <section class="response-detail-section"><div class="response-detail-section-heading"><h3>Direct comparisons</h3><p>The option selected in each comparison shown to this participant.</p></div><div class="response-comparison-list" id="detailComparisons"></div></section>
         </div>
       </div>
     </dialog>

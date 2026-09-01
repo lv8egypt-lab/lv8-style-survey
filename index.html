@@ -11,12 +11,12 @@
     <meta property="og:image" content="assets/brand/og-cover.png">
     <title>LV8 Style Pick</title>
     <link rel="icon" href="assets/brand/icon.png">
-    <link rel="stylesheet" href="styles.css?v=20260901-top5">
-    <script src="js/config.js?v=20260901-top5" defer></script>
-    <script src="js/data.js?v=20260901-fast-catalog" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260901-survey-v7">
+    <script src="js/config.js?v=20260901-survey-v7" defer></script>
+    <script src="js/data.js?v=20260901-survey-v7" defer></script>
     <script src="js/catalog-images.js?v=20260901-fast-catalog" defer></script>
-    <script src="js/storage.js?v=20260901-top5" defer></script>
-    <script src="js/app.js?v=20260901-fast-catalog" defer></script>
+    <script src="js/storage.js?v=20260901-survey-v7" defer></script>
+    <script src="js/app.js?v=20260901-survey-v7" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -37,12 +37,12 @@
         <div class="welcome-copy">
           <p class="eyebrow">Help us shape the first drop</p>
           <h1>What deserves<br><span>to launch from LV8?</span></h1>
-          <p class="lede">Explore the styles, rate each one out of five, choose a realistic price range, settle the direct comparisons, then rank your final top five.</p>
+          <p class="lede">Rate a balanced selection, explain what works, settle the direct comparisons, then edit and rank your final Top Five.</p>
 
           <div class="survey-facts" aria-label="Survey information">
-            <span><strong id="styleCount">23</strong> styles</span>
-            <span>About <strong>9</strong> minutes</span>
-            <span><strong>No</strong> right or wrong answers</span>
+            <span><strong id="styleCount">18</strong> styles maximum</span>
+            <span>About <strong>10</strong> minutes</span>
+            <span><strong>Randomized</strong> for fairness</span>
           </div>
 
           <form class="start-form" id="startForm">
@@ -59,6 +59,66 @@
               <span>Your name or nickname <small>optional</small></span>
               <input id="nickname" name="nickname" type="text" maxlength="40" autocomplete="nickname" placeholder="Example: Kareem">
             </label>
+
+            <div class="profile-grid">
+              <label class="select-field">
+                <span>Age range</span>
+                <select id="profileAge" name="age" required>
+                  <option value="">Choose age</option>
+                  <option value="18-20">18-20</option>
+                  <option value="21-24">21-24</option>
+                  <option value="25-29">25-29</option>
+                  <option value="30-39">30-39</option>
+                  <option value="40-plus">40+</option>
+                </select>
+              </label>
+              <label class="select-field">
+                <span>City / region</span>
+                <select id="profileCity" name="city" required>
+                  <option value="">Choose location</option>
+                  <option value="cairo-giza">Cairo / Giza</option>
+                  <option value="alexandria">Alexandria</option>
+                  <option value="delta">Delta / Lower Egypt</option>
+                  <option value="upper-egypt">Upper Egypt</option>
+                  <option value="other-egypt">Other Egypt</option>
+                  <option value="outside-egypt">Outside Egypt</option>
+                </select>
+              </label>
+              <label class="select-field">
+                <span>Main reason for buying sportswear</span>
+                <select id="profileUse" name="primaryUse" required>
+                  <option value="">Choose main use</option>
+                  <option value="training">Training / running</option>
+                  <option value="everyday">Everyday movement</option>
+                  <option value="university">University</option>
+                  <option value="work-cafe">Work / cafés</option>
+                  <option value="travel">Travel / weekends</option>
+                  <option value="streetwear">Street styling</option>
+                  <option value="modest">Modest lifestyle</option>
+                </select>
+              </label>
+              <label class="select-field">
+                <span>Typical clothing budget</span>
+                <select id="profileBudget" name="budget" required>
+                  <option value="">Choose budget</option>
+                  <option value="under-1000">Under EGP 1,000</option>
+                  <option value="1000-2000">EGP 1,000-2,000</option>
+                  <option value="2000-3000">EGP 2,000-3,000</option>
+                  <option value="3000-plus">EGP 3,000+</option>
+                </select>
+              </label>
+              <label class="select-field profile-grid-wide">
+                <span>Preferred fit</span>
+                <select id="profileFit" name="fit" required>
+                  <option value="">Choose preferred fit</option>
+                  <option value="slim">Slim / fitted</option>
+                  <option value="regular">Regular</option>
+                  <option value="oversized">Oversized</option>
+                  <option value="wide-leg">Wide-leg / relaxed</option>
+                  <option value="modest-coverage">Modest coverage</option>
+                </select>
+              </label>
+            </div>
 
             <button class="button button-primary button-large" type="submit">
               Start rating
@@ -121,14 +181,20 @@
             </fieldset>
 
             <fieldset class="question-block">
-              <legend>What is a realistic price for this piece or set?</legend>
-              <p>Choose the range you would genuinely expect to pay.</p>
+              <legend id="priceQuestion">What is the maximum price you would pay?</legend>
+              <p id="priceHint">Choose the highest range you would genuinely accept.</p>
               <div class="choice-grid" id="priceChoices"></div>
             </fieldset>
 
             <fieldset class="question-block question-compact">
               <legend>Would you buy it if the final execution is strong?</legend>
               <div class="choice-grid choice-grid-three" id="intentChoices"></div>
+            </fieldset>
+
+            <fieldset class="question-block reason-block">
+              <legend>Why did you give this rating? <small>Choose up to 3</small></legend>
+              <div class="reason-grid" id="reasonChoices"></div>
+              <p class="selection-hint" id="reasonHint">Optional, but it helps us understand the score.</p>
             </fieldset>
 
             <label class="text-field notes-field">
@@ -149,7 +215,7 @@
         <header class="section-intro">
           <p class="eyebrow">Direct comparison</p>
           <h1>If you could choose only one,<br><span>which would it be?</span></h1>
-          <p>Choose one option in every comparison. Focus on the direction and detail you would actually use.</p>
+          <p>Choose one option in every comparison. Judge only the named design variable—not the model, pose, background, or color.</p>
         </header>
 
         <div id="comparisonList" class="comparison-list"></div>
@@ -165,14 +231,43 @@
         <header class="section-intro ranking-intro">
           <p class="eyebrow">Final decision</p>
           <h1>Rank your<br><span>Top Five.</span></h1>
-          <p>These are your five strongest-rated styles. Tap them in order from first place to fifth place. Your purchase intent breaks any rating ties.</p>
+          <p>We built a shortlist from your ratings and purchase intent. Replace anything that does not belong, then rank the final five.</p>
         </header>
+
+        <section class="shortlist-editor" aria-labelledby="shortlistTitle">
+          <div class="subsection-heading">
+            <div><p class="eyebrow">Step 1</p><h2 id="shortlistTitle">Confirm your shortlist.</h2></div>
+            <strong id="shortlistStatus">5 / 5 selected</strong>
+          </div>
+          <div class="shortlist-list" id="shortlistList"></div>
+          <details class="alternative-panel">
+            <summary>Replace a shortlisted style</summary>
+            <p>Remove one style above, then add a better option from your other rated products.</p>
+            <div class="alternative-list" id="alternativeList"></div>
+          </details>
+        </section>
+
+        <div class="subsection-heading ranking-heading">
+          <div><p class="eyebrow">Step 2</p><h2>Rank the final five.</h2></div>
+        </div>
 
         <div class="ranking-status" aria-live="polite">
           <strong id="rankingProgress">Choose your #1</strong>
           <button class="text-button" id="resetRankingButton" type="button">Reset ranking</button>
         </div>
         <div class="ranking-list" id="rankingList"></div>
+
+        <section class="final-feedback">
+          <fieldset class="question-block">
+            <legend>If LV8 launched only one, which should it be?</legend>
+            <p>Make one final launch decision. This can match your #1 ranking.</p>
+            <div class="single-choice-list" id="singleLaunchChoices"></div>
+          </fieldset>
+          <label class="text-field">
+            <span>What is missing from this collection? <small>optional</small></span>
+            <textarea id="missingProduct" maxlength="300" rows="3" placeholder="A product, fit, color, or category you wanted to see..."></textarea>
+          </label>
+        </section>
 
         <div class="survey-actions ranking-actions">
           <button class="button button-secondary" id="backToComparisonsButton" type="button">Back to comparisons</button>
